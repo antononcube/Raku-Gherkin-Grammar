@@ -1,0 +1,33 @@
+{
+  "name": "Gherkin::Grammar",
+  "description": "Gherkin grammar and actions.",
+  "version": "0.1.0",
+  "perl": "6.*",
+  "authors": [
+    "Anton Antonov"
+  ],
+  "auth": "zef:antononcube",
+  "depends": [],
+  "build-depends": [],
+  "test-depends": [
+    "Test"
+  ],
+  "provides": {
+    "Gherkin::Actions::Raku": "lib/Gherkin/Actions/Raku.rakumod",
+    "Gherkin::Grammar": "lib/Gherkin/Grammar.rakumod",
+    "Gherkin::Grammarish": "lib/Gherkin/Grammarish.rakumod"
+  },
+  "resources": [],
+  "license": "Artistic-2.0",
+  "tags": [
+    "gherkin",
+    "cucumber",
+    "bdd",
+    "behaviour driven",
+    "behaviour driven development",
+    "grammar",
+    "interpreter"
+  ],
+  "api": "1",
+  "source-url": "git://github.com/antononcube/Raku-Gherkin-Grammar.git"
+}
