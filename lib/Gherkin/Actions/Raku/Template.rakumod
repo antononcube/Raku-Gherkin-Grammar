@@ -133,14 +133,14 @@ class Gherkin::Actions::Raku::Template {
     }
 
     multi method make-sub-call(Str:D $type, Str:D $cmd) {
-        my $res = "multi sub $type\( \"$cmd\" \) \{\}";
+        my $res = "multi sub $type\( '$cmd' \) \{\}";
         return $res;
     }
 
     multi method make-example-sub($descr, @lines) {
         my $res = "multi sub Example('$descr') \{";
         $res ~= "\n\t" ~ @lines.map({ $_.subst('multi sub', '').subst('{}', '').trim ~ ';' }).join("\n\t");
-        $res ~= "\n}\n\nis Example(\'$descr\'), True, '$descr'";
+        $res ~= "\n}\n\nis Example(\'$descr\'), True, '$descr';";
         return $res;
     }
 
@@ -148,7 +148,7 @@ class Gherkin::Actions::Raku::Template {
         my $res = "use v6.d;\n\n#{'=' x 60}\n\n" ~
                 $protos ~
                 "\n#{'=' x 60}\n\n" ~
-                "use Test\nplan *;" ~
+                "use Test;\nplan *;" ~
                 "\n\n#{'=' x 60}";
         return $res;
     }
