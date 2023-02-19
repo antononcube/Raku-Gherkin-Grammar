@@ -8,6 +8,7 @@ role Gherkin::Grammarish {
     token TOP($*lang) { <ghk-feature-block> }
 
     regex ghk-feature-block {
+        [<ghk-tag-line>? \n]?
         <ghk-feature-text-line> \n+
         <ghk-feature-description>? \n*
         [ <ghk-rule-block> || <ghk-example-block> ]
@@ -21,6 +22,7 @@ role Gherkin::Grammarish {
     }
 
     regex ghk-example-block {
+        [ <ghk-tag-line> \n]?
         <ghk-example-text-line> \n
         <ghk-given-block>?
         <ghk-when-block>?
@@ -87,6 +89,8 @@ role Gherkin::Grammarish {
     regex ghk-text-line-tail-arg         { <ghk-text-line-tail> [ \n [ <ghk-doc-string> || <md-table-block> ] ]? }
     regex ghk-text-line-tail             { <-[\v]>+ }
     regex ghk-text-element               { <-[\v]>* }
+    token ghk-tag                        { '@' \S+ }
+    regex ghk-tag-line                   { \h* <ghk-tag>+ % \h+ }
     regex ghk-description-line           { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim ~~ / ^ [ Rule | Example | Scenario | Given | When | Then | But | And | Feature | Background ] \h* ':'/}> }
 
     token ghk-keyword-and { 'And' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<and> }> }
