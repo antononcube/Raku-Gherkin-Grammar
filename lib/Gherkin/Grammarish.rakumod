@@ -82,7 +82,7 @@ role Gherkin::Grammarish {
     regex ghk-then-text-line             { \h* 'Then'  \h+ <ghk-text-line-tail-arg> }
     regex ghk-but-text-line              { \h* 'But'   \h+ <ghk-text-line-tail-arg> }
     regex ghk-asterix-text-line          { \h* '*'     \h+ <ghk-text-line-tail-arg> }
-    regex ghk-text-line-tail-arg         { <ghk-text-line-tail> [ \n <ghk-doc-string> ]? }
+    regex ghk-text-line-tail-arg         { <ghk-text-line-tail> [ \n [ <ghk-doc-string> || <md-table-block> ] ]? }
     regex ghk-text-line-tail             { <-[\v]>+ }
     regex ghk-text-element               { <-[\v]>* }
     regex ghk-description-line           { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim ~~ / ^ [ Rule | Exmaple | Scenario | Given | When | Then | But | And | Feature | Background ] \h* ':'/}> }

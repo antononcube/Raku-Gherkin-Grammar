@@ -2,8 +2,10 @@ use v6.d;
 
 use Gherkin::Grammarish;
 use Gherkin::Actions::Raku;
+use Markdown::Grammar;
 
 grammar Gherkin::Grammar
+        is Markdown::Grammar
         does Gherkin::Grammarish {
 
 }
