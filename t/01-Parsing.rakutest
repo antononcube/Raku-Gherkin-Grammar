@@ -106,4 +106,22 @@ END
 ok gherkin-parse($text6);
 
 
+#-----------------------------------------------------------
+## 7
+#-----------------------------------------------------------
+my $text7 = q:to/END/;
+Given Table of company contacts:
+  | Company                      | Contact           | Country |
+  |------------------------------|-------------------|---------|
+  | Alfreds Futterkiste          | Maria Anders      | Germany |
+  | Centro comercial Moctezuma   | Francisco Chang   | Mexico  |
+  | Ernst Handel                 | Roland Mendel     | Austria |
+  | Island Trading               | Helen Bennett     | UK      |
+  | Laughing Bacchus Winecellars | Yoshi Tannamuri   | Canada  |
+  | Magazzini Alimentari Riuniti | Giovanni Rovelli  | Italy   |
+
+END
+
+ok gherkin-parse($text7, rule => 'ghk-given-block');
+
 done-testing;
