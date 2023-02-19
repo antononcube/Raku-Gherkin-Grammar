@@ -32,6 +32,14 @@ The package provides the functions:
 The Raku outputs of `gherkin-interpret` are test file templates that after filling-in
 would provide tests correspond to the input specifications (given in Gherkin.)
 
+**Remark:** A good introduction to the Cucumber / Gherkin approach and workflows is the 
+[README](https://github.com/robertlemmen/raku-cucumis-sextus#readme)
+of [RLp1].
+
+**Remark:** The grammar in this package was programmed following the specifications and 
+explanations in 
+[Gherkin Reference](https://cucumber.io/docs/gherkin/reference/).
+
 ------
 
 ## Installation
@@ -67,24 +75,38 @@ END
 gherkin-interpret($text0);
 ```
 ```
-# use Test;
+# use v6.d;
 # 
-# #------------------------------------------------------------
+# #============================================================
 # 
 # proto Background(@cmdFuncPairs) {*}
 # proto ScenarioOutline(@cmdFuncPairs) {*}
+# proto Example($descr) {*}
 # proto Given(Str:D $cmd, |) {*}
 # proto When(Str:D $cmd, |) {*}
 # proto Then(Str:D $cmd, |) {*}
 # 
+# #============================================================
 # 
+# use Test;
+# plan *;
+# 
+# #============================================================
+# # Example : One plus one
 # #------------------------------------------------------------
 # 
-# # Example : One plus one
+# multi sub When( '1 + 1' ) {}
 # 
-# multi sub When( "1 + 1" ) { }
+# multi sub Then( '2' ) {}
 # 
-# multi sub Then( "2" ) { }
+# multi sub Example('One plus one') {
+# 	When( '1 + 1' );
+# 	Then( '2' );
+# }
+# 
+# is Example('One plus one'), True, 'One plus one';
+# 
+# done-testing;
 ```
 
 ### Internationalization
@@ -107,31 +129,61 @@ END
 gherkin-interpret($ru-text, lang => 'Russian');
 ```
 ```
-# use Test;
+# use v6.d;
 # 
-# #------------------------------------------------------------
+# #============================================================
 # 
 # proto Background(@cmdFuncPairs) {*}
 # proto ScenarioOutline(@cmdFuncPairs) {*}
+# proto Example($descr) {*}
 # proto Given(Str:D $cmd, |) {*}
 # proto When(Str:D $cmd, |) {*}
 # proto Then(Str:D $cmd, |) {*}
 # 
+# #============================================================
 # 
+# use Test;
+# plan *;
+# 
+# #============================================================
+# # Example : одно плюс одно
 # #------------------------------------------------------------
 # 
-# # Example : одно плюс одно
+# multi sub When( '1 + 1' ) {}
 # 
-# multi sub When( "1 + 1" ) { }
+# multi sub Then( '2' ) {}
 # 
-# multi sub Then( "2" ) { }
+# multi sub Example('одно плюс одно') {
+# 	When( '1 + 1' );
+# 	Then( '2' );
+# }
+# 
+# is Example('одно плюс одно'), True, 'одно плюс одно';
+# 
+# done-testing;
 ```
 
 ### Arguments
 
 The package takes both doc-strings and tables as step arguments.
 
+The tables are parsed with the package "Markdown::Grammar", [AAp1].
+
 *TBD...*
+
+------
+
+## Complete example
+
+The files 
+["Calculator.feature"](./resources/Calculator.feature) 
+and
+["Calculator.rakutest"](./resources/Calculator.rakutest)
+provide a fully worked example of how this package can be used 
+to implement Cucumber framework workflows.
+
+**Remark:** The Cucumber framework(s) expect Gherkin specifications to be written in 
+files with extension ".feature".
 
 ------
 
@@ -155,6 +207,8 @@ gherkin-interpretation --help
 
 ## References
 
+### Articles
+
 [Wk1] Wikipedia entry,
 ["Cucumber (software)"](https://en.wikipedia.org/wiki/Cucumber_(software)).
 See also [cucumber.io](https://cucumber.io).
@@ -162,14 +216,19 @@ See also [cucumber.io](https://cucumber.io).
 [Wk2] Wikipedia entry,
 ["Behavior-driven development"](https://en.wikipedia.org/wiki/Behavior-driven_development).
 
-[RLp1] Robert Lemmen,
-[Cucumis Sextus Raku package](https://github.com/robertlemmen/raku-cucumis-sextus),
-(2017-2020),
-[GitHub/robertlemmen](https://github.com/robertlemmen).
+[SB1] SmartBear,
+["Gherkin Reference"](https://cucumber.io/docs/gherkin/reference/),
+(2023),
+[cucumber.io](https://cucumber.io).
+
+### Packages 
 
 [AAp1] Anton Antonov,
 [Markdown::Grammar Raku package](https://github.com/antononcube/Raku-Markdown-Grammar),
 (2022-2023),
 [GitHub/antononcube](https://github.com/antononcube).
 
-
+[RLp1] Robert Lemmen,
+[Cucumis Sextus Raku package](https://github.com/robertlemmen/raku-cucumis-sextus),
+(2017-2020),
+[GitHub/robertlemmen](https://github.com/robertlemmen).
