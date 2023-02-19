@@ -1,0 +1,59 @@
+use v6.d;
+
+#============================================================
+
+proto Background(@cmdFuncPairs) {*}
+proto ScenarioOutline(@cmdFuncPairs) {*}
+proto Example($descr) {*}
+proto Given(Str:D $cmd, |) {*}
+proto When(Str:D $cmd, |) {*}
+proto Then(Str:D $cmd, |) {*}
+
+#============================================================
+
+use Test;
+plan *;
+
+#============================================================
+# Example : First Key Press on the Display
+#------------------------------------------------------------
+my @state;
+
+multi sub Given( 'a new Calculator object' ) { @state = Empty; }
+
+multi sub Given( 'having pressed 1' ) { @state.push('1'); }
+
+multi sub Then( 'the display should show 1' ) { @state.tail eq '1'; }
+
+multi sub Example('First Key Press on the Display') {
+	Given( 'a new Calculator object' );
+	Given( 'having pressed 1' );
+	Then( 'the display should show 1' );
+}
+
+is Example('First Key Press on the Display'), True, 'First Key Press on the Display';
+
+#============================================================
+# Example : Addition of two
+#------------------------------------------------------------
+
+multi sub When( $cmd where $cmd ~~ / ^ entered \h* \" .* \" $ / ) {
+	use MONKEY-SEE-NO-EVAL;
+	if $cmd ~~ / ^ entered \h* \" (.*) \" $ / {
+		@state.push(EVAL($0.Str));
+	} else {
+		note 'Cannot match';
+	}
+}
+
+multi sub Then( $cmd where * ~~ / \d+ / ) { @state.tail eq $cmd; }
+
+multi sub Example('Addition of two') {
+	Given( 'a new Calculator object' );
+	When( 'entered "1 + 1"' );
+	Then( '2' );
+}
+
+is Example('Addition of two'), True, 'Addition of two';
+
+done-testing;
