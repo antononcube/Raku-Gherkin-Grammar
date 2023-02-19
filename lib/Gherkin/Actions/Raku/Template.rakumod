@@ -11,30 +11,39 @@ END
 
 class Gherkin::Actions::Raku::Template {
     method TOP($/) {
-        make self.make-preface() ~ "\n\n" ~  $/.values[0].made;
+        make $/.values[0].made;
     }
 
     method ghk-feature-block($/) {
-        make $/.values[0].made;
+        my $res;
+        with $<ghk-rule-block> { $res = $<ghk-rule-block>.made };
+        with $<ghk-example-block> { $res = $<ghk-example-block>.made };
+        make self.make-preface() ~ "\n\n" ~ $res;
     }
 
     method ghk-rule-block($/) {
         make $<ghk-example-block>>>.made.join("\n\n");
     }
 
+    #------------------------------------------------------
     method ghk-example-block($/) {
         my @res;
-        if $<ghk-given-block> { @res.append( $<ghk-given-block>.made ); }
-        if $<ghk-when-block> { @res.append( $<ghk-when-block>.made ); }
+        @res.append( $<ghk-example-text-line>.made );
+        with $<ghk-given-block> { @res.append( $<ghk-given-block>.made ); }
+        with $<ghk-when-block> { @res.append( $<ghk-when-block>.made ); }
         @res.append( $<ghk-then-block>.made );
         make @res.join("\n\n");
+    }
+
+    method ghk-example-text-line ($/) {
+        make '# Example : ' ~  $<ghk-text-line-tail>.made;
     }
 
     #------------------------------------------------------
     method ghk-given-block($/) {
         my @res;
         @res.append($<ghk-given-text-line>.made);
-        if $<ghk-given-block-element> { @res.append( $<ghk-given-block-element>>>.made ); }
+        with $<ghk-given-block-element> { @res.append( $<ghk-given-block-element>>>.made ); }
         note 'Given block:', @res;
         make @res.join("\n\n");
      }
@@ -47,7 +56,7 @@ class Gherkin::Actions::Raku::Template {
     method ghk-when-block($/) {
         my @res;
         @res.append($<ghk-when-text-line>.made);
-        if $<ghk-when-block-element> {
+        with $<ghk-when-block-element> {
             @res.append( $<ghk-when-block-element>>>.made );
         }
         make @res.join("\n\n");
@@ -61,7 +70,7 @@ class Gherkin::Actions::Raku::Template {
     method ghk-then-block($/) {
         my @res;
         @res.append($<ghk-then-text-line>.made);
-        if $<ghk-then-block-element> { @res.append( $<ghk-then-block-element>>>.made ); }
+        with $<ghk-then-block-element> { @res.append( $<ghk-then-block-element>>>.made ); }
         make @res.join("\n\n");
     }
     method ghk-then-block-element($/) { make $/.values[0].made; }
@@ -71,11 +80,15 @@ class Gherkin::Actions::Raku::Template {
 
     #------------------------------------------------------
     method ghk-text-line-tail-arg($/) {
-        my $cmd = $<ghk-text-line-tail>.Str;
+        my $cmd = $<ghk-text-line-tail>.made;
         my $arg;
         if $<ghk-doc-string> { $arg = $<ghk-doc-string>.made; }
         if $<md-table-block> { $arg = $<md-table-block>.made; }
         make $arg.defined ?? [$cmd, $arg] !! $cmd;
+    }
+
+    method ghk-text-line-tail($/) {
+        make $/.Str;
     }
 
     #------------------------------------------------------
