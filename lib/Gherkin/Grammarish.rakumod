@@ -1,9 +1,11 @@
 use v6.d;
 
+use Gherkin::Grammar::Internationalization;
+
 constant $docStrDelim = '"""';
 
 role Gherkin::Grammarish {
-    token TOP($*obj) { <ghk-feature-block> }
+    token TOP($*lang) { <ghk-feature-block> }
 
     regex ghk-feature-block {
         <ghk-feature-text-line> \n+
@@ -87,16 +89,16 @@ role Gherkin::Grammarish {
     regex ghk-text-element               { <-[\v]>* }
     regex ghk-description-line           { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim ~~ / ^ [ Rule | Example | Scenario | Given | When | Then | But | And | Feature | Background ] \h* ':'/}> }
 
-    token ghk-keyword-and { 'And' }
-    token ghk-keyword-asterisk { '*' }
-    token ghk-keyword-but { 'But' }
-    token ghk-keyword-example { 'Example' }
-    token ghk-keyword-feature { 'Feature' }
-    token ghk-keyword-given { 'Given' }
-    token ghk-keyword-outline { 'Outline' }
-    token ghk-keyword-rule { 'Rule' }
-    token ghk-keyword-scenario { 'Scenario' }
-    token ghk-keyword-template { 'Template' }
-    token ghk-keyword-then { 'Then' }
-    token ghk-keyword-when { 'When' }
+    token ghk-keyword-and { 'And' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<and> }> }
+    token ghk-keyword-asterisk { '*' || (\S+) <?{ $0.Str ~~ gherkin-keywords($*lang)<asterisk> }> }
+    token ghk-keyword-but { 'But' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<but> }> }
+    token ghk-keyword-example { 'Example' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<example> }> }
+    token ghk-keyword-feature { 'Feature' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<feature> }> }
+    token ghk-keyword-given { 'Given' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<given> }> }
+    token ghk-keyword-outline { 'Outline' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<outline> }> }
+    token ghk-keyword-rule { 'Rule' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<rule> }> }
+    token ghk-keyword-scenario { 'Scenario' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<scenario> }> }
+    token ghk-keyword-template { 'Template' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<template> }> }
+    token ghk-keyword-then { 'Then' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<then> }> }
+    token ghk-keyword-when { 'When' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<when> }> }
 }
