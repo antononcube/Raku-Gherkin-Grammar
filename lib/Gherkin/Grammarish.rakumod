@@ -5,6 +5,7 @@ role Gherkin::Grammarish {
 
     regex ghk-feature-block {
         <ghk-feature-text-line> \n+
+        <ghk-feature-description>? \n*
         <ghk-rule-block>
         \n*
     }
@@ -59,6 +60,10 @@ role Gherkin::Grammarish {
         | <ghk-asterix-text-line>
     }
 
+    regex ghk-feature-description {
+        <ghk-description-line>+ % \n
+    }
+
     regex ghk-feature-text-line { \h* 'Feature' \h* ':' \h+ <ghk-text-line-tail> }
     regex ghk-example-text-line { \h* [ 'Example' | 'Scenario' ] \h* ':' \h+ <ghk-text-line-tail> }
     regex ghk-rule-text-line    { \h* 'Rule'  \h* ':' \h+ <ghk-text-line-tail> }
@@ -70,5 +75,7 @@ role Gherkin::Grammarish {
     regex ghk-asterix-text-line { \h* '*'     \h+ <ghk-text-line-tail> }
     regex ghk-text-line-tail    { <-[\v]>+ }
     regex ghk-text-element      { <-[\v]>* }
+    #regex ghk-description-line  { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim.starts-with('Rule:') }> }
+    regex ghk-description-line  { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim ~~ / ^ [ Rule | Exmaple | Scenario] \h* ':'/}> }
 
 }
