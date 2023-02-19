@@ -89,17 +89,17 @@ role Gherkin::Grammarish {
     regex ghk-text-element               { <-[\v]>* }
     regex ghk-description-line           { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim ~~ / ^ [ Rule | Example | Scenario | Given | When | Then | But | And | Feature | Background ] \h* ':'/}> }
 
-    token ghk-keyword-and { 'And' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<and> }> }
+    token ghk-keyword-and { 'And' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<and> }> }
     token ghk-keyword-asterisk { '*' }
-    token ghk-keyword-but { 'But' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<but> }> }
-    token ghk-keyword-example { 'Example' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<example> }> }
-    token ghk-keyword-examples { 'Examples' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<examples> }> }
-    token ghk-keyword-feature { 'Feature' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<feature> }> }
-    token ghk-keyword-given { 'Given' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<given> }> }
-    token ghk-keyword-outline { 'Outline' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<outline> }> }
-    token ghk-keyword-rule { 'Rule' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<rule> }> }
-    token ghk-keyword-scenario { 'Scenario' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<scenario> }> }
-    token ghk-keyword-template { 'Template' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<template> }> }
-    token ghk-keyword-then { 'Then' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<then> }> }
-    token ghk-keyword-when { 'When' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<when> }> }
+    token ghk-keyword-but { 'But' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<but> }> }
+    token ghk-keyword-example { 'Example' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<example> }> }
+    token ghk-keyword-examples { 'Examples' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<examples> }> }
+    token ghk-keyword-feature { 'Feature' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<feature> }> }
+    token ghk-keyword-given { 'Given' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<given> }> }
+    token ghk-keyword-outline { 'Outline' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<outline> }> }
+    token ghk-keyword-rule { 'Rule' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<rule> }> }
+    token ghk-keyword-scenario { 'Scenario' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<scenario> }> }
+    token ghk-keyword-template { 'Template' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<template> }> }
+    token ghk-keyword-then { 'Then' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<then> }> }
+    token ghk-keyword-when { 'When' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang // 'en')<when> }> }
 }
