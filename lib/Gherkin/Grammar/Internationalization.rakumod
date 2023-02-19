@@ -83,7 +83,8 @@ my %gherkinKeywords =
         'and'              => /'*'|'И'/,
         'background'       => /'Предистория'/,
         'but'              => /'*'|'Но'/,
-        'examples'         => /'Примери' | 'Пример'/,
+        'example'         => /'Пример'/,
+        'examples'         => /'Примери'/,
         'feature'          => /'Функционалност'/,
         'given'            => /'*'|'Дадено'/,
         'name'             => /'Bulgarian'/,
@@ -224,6 +225,7 @@ my %gherkinKeywords =
         'and'              => /'*'|'And'/,
         'background'       => /'Background'/,
         'but'              => /'*'|'But'/,
+        'example'         => /'Example'|'Scenario'/,
         'examples'         => /'Examples'|'Scenarios'/,
         'feature'          => /'Feature'|'Business Need'|'Ability'/,
         'given'            => /'*'|'Given'/,
@@ -239,6 +241,7 @@ my %gherkinKeywords =
         'and'              => /'*'|'An'/,
         'background'       => /'Dis is what went down'/,
         'but'              => /'*'|'Buh'/,
+        'example'         => /'Example'/,
         'examples'         => /'Examples'/,
         'feature'          => /'Feature'/,
         'given'            => /'*'|'Givun'|'Youse know when youse got'/,
@@ -328,6 +331,7 @@ my %gherkinKeywords =
         'and'              => /'*'|'Y'|'E'/,
         'background'       => /'Antecedentes'/,
         'but'              => /'*'|'Pero'/,
+        'example'          => /'Ejemplo'/,
         'examples'         => /'Ejemplos'/,
         'feature'          => /'Característica'/,
         'given'            => /'*'|'Dado'|'Dada'|'Dados'|'Dadas'/,
@@ -763,6 +767,7 @@ my %gherkinKeywords =
         'and'              => /'*'|'E'/,
         'background'       => /'Contexto'|'Cenário de Fundo'|'Cenario de Fundo'|'Fundo'/,
         'but'              => /'*'|'Mas'/,
+        'example'          => /'Exemplo'|'Exmplar'/,
         'examples'         => /'Exemplos'|'Cenários'|'Cenarios'/,
         'feature'          => /'Funcionalidade'|'Característica'|'Caracteristica'/,
         'given'            => /'*'|'Dado'|'Dada'|'Dados'|'Dadas'/,
@@ -792,7 +797,8 @@ my %gherkinKeywords =
         'and'              => /'*'|'И'|'К тому же'|'Также'/,
         'background'       => /'Предыстория'|'Контекст'/,
         'but'              => /'*'|'Но'|'А'/,
-        'examples'         => /'Примеры' | 'Пример' /,
+        'example'          => /'Пример' /,
+        'examples'         => /'Примеры' /,
         'feature'          => /'Функция'|'Функциональность'|'Функционал'|'Свойство'/,
         'given'            => /'*'|'Допустим'|'Дано'|'Пусть'|'Если'/,
         'name'             => /'Russian'/,
@@ -1051,10 +1057,6 @@ proto gherkin-keywords(|) is export {*}
 
 multi sub gherkin-keywords() {
     return %gherkinKeywords;
-}
-
-multi sub gherkin-keywords(Any) {
-    return gherkin-keywords('en');
 }
 
 multi sub gherkin-keywords(Str:D $lang) {

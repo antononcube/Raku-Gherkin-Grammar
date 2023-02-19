@@ -93,6 +93,7 @@ role Gherkin::Grammarish {
     token ghk-keyword-asterisk { '*' }
     token ghk-keyword-but { 'But' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<but> }> }
     token ghk-keyword-example { 'Example' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<example> }> }
+    token ghk-keyword-examples { 'Examples' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<examples> }> }
     token ghk-keyword-feature { 'Feature' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<feature> }> }
     token ghk-keyword-given { 'Given' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<given> }> }
     token ghk-keyword-outline { 'Outline' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<outline> }> }
