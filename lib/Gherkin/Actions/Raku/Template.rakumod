@@ -1,8 +1,11 @@
 use v6.d;
 
+use Data::Reshapers;
+
 constant $protos = q:to/END/;
 proto Background(@cmdFuncPairs) {*}
 proto ScenarioOutline(@cmdFuncPairs) {*}
+proto Example($descr) {*}
 proto Given(Str:D $cmd, |) {*}
 proto When(Str:D $cmd, |) {*}
 proto Then(Str:D $cmd, |) {*}
@@ -17,22 +20,33 @@ class Gherkin::Actions::Raku::Template {
     method ghk-feature-block($/) {
         my $res;
         with $<ghk-rule-block> { $res = $<ghk-rule-block>.made };
-        with $<ghk-example-block> { $res = $<ghk-example-block>.made };
-        make self.make-preface() ~ "\n\n" ~ $res;
+        with $<ghk-example-block-list> { $res = $<ghk-example-block-list>.made };
+        make self.make-preface() ~ "\n" ~ $res ~ "\n\ndone-testing;";
     }
 
     method ghk-rule-block($/) {
-        make $<ghk-example-block>>>.made.join("\n\n");
+        make $<ghk-example-block-list>.made;
     }
 
     #------------------------------------------------------
+    method ghk-example-block-list($/) {
+        make $<ghk-example-block>>>.made.join("\n\n#{'=' x 60}\n");
+    }
+
     method ghk-example-block($/) {
+        my $descr = $<ghk-example-text-line><ghk-text-line-tail>.made.trim;
         my @res;
-        @res.append( $<ghk-example-text-line>.made );
+
         with $<ghk-given-block> { @res.append( $<ghk-given-block>.made ); }
+
         with $<ghk-when-block> { @res.append( $<ghk-when-block>.made ); }
+
         @res.append( $<ghk-then-block>.made );
-        make @res.join("\n\n");
+
+        make $<ghk-example-text-line>.made ~ "\n" ~
+                "#{'-' x 60}\n\n" ~
+                @res.join("\n\n") ~ "\n\n" ~
+                self.make-example-sub($descr, @res);
     }
 
     method ghk-example-text-line ($/) {
@@ -44,7 +58,7 @@ class Gherkin::Actions::Raku::Template {
         my @res;
         @res.append($<ghk-given-text-line>.made);
         with $<ghk-given-block-element> { @res.append( $<ghk-given-block-element>>>.made ); }
-        make @res.join("\n\n");
+        make @res;
      }
     method ghk-given-block-element($/) { make $/.values[0].made.subst(' And(', ' Given(');; }
     method ghk-given-text-line($/) {
@@ -58,7 +72,7 @@ class Gherkin::Actions::Raku::Template {
         with $<ghk-when-block-element> {
             @res.append( $<ghk-when-block-element>>>.made );
         }
-        make @res.join("\n\n");
+        make @res;
     }
     method ghk-when-block-element($/) { make $/.values[0].made.subst(' And(', ' When(');; }
     method ghk-when-text-line($/) {
@@ -70,7 +84,7 @@ class Gherkin::Actions::Raku::Template {
         my @res;
         @res.append($<ghk-then-text-line>.made);
         with $<ghk-then-block-element> { @res.append( $<ghk-then-block-element>>>.made ); }
-        make @res.join("\n\n");
+        make @res;
     }
     method ghk-then-block-element($/) { make $/.values[0].made.subst(' And(', ' Then('); }
     method ghk-then-text-line($/) {
@@ -114,17 +128,28 @@ class Gherkin::Actions::Raku::Template {
 
     #------------------------------------------------------
     multi method make-sub-call(Str:D $type, @cmd) {
-        my $res = "multi sub $type\( {|@cmd} \) \{ \}";
+        my $res = "multi sub $type\( {|@cmd} \) \{\}";
         return $res;
     }
 
     multi method make-sub-call(Str:D $type, Str:D $cmd) {
-        my $res = "multi sub $type\( \"$cmd\" \) \{ \}";
+        my $res = "multi sub $type\( \"$cmd\" \) \{\}";
+        return $res;
+    }
+
+    multi method make-example-sub($descr, @lines) {
+        my $res = "multi sub Example('$descr') \{";
+        $res ~= "\n\t" ~ @lines.map({ $_.subst('multi sub', '').subst('{}', '').trim ~ ';' }).join("\n\t");
+        $res ~= "\n}\n\nis Example(\'$descr\'), True, '$descr'";
         return $res;
     }
 
     method make-preface() {
-        my $res = "use Test;\n\n#{'-' x 60}\n\n" ~ $protos ~ "\n\n#{'-' x 60}";
+        my $res = "use v6.d;\n\n#{'=' x 60}\n\n" ~
+                $protos ~
+                "\n#{'=' x 60}\n\n" ~
+                "use Test\nplan *;" ~
+                "\n\n#{'=' x 60}";
         return $res;
     }
 }
