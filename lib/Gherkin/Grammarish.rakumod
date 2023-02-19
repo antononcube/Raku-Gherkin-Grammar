@@ -72,19 +72,31 @@ role Gherkin::Grammarish {
         $<docStrDelim> \s*
     }
 
-    regex ghk-feature-text-line          { \h* 'Feature' \h* ':' \h+ <ghk-text-line-tail> }
-    regex ghk-example-text-line          { \h* [ 'Example' | 'Scenario' ] \h* ':' \h+ <ghk-text-line-tail> }
-    regex ghk-scenario-outline-text-line { \h* 'Scenario' \h+ [ 'Outline' | 'Template' ] \h* ':' \h+ <ghk-text-line-tail> }
-    regex ghk-rule-text-line             { \h* 'Rule'  \h* ':' \h+ <ghk-text-line-tail> }
-    regex ghk-given-text-line            { \h* 'Given' \h+ <ghk-text-line-tail-arg> }
-    regex ghk-when-text-line             { \h* 'When'  \h+ <ghk-text-line-tail-arg> }
-    regex ghk-and-text-line              { \h* 'And'   \h+ <ghk-text-line-tail-arg> }
-    regex ghk-then-text-line             { \h* 'Then'  \h+ <ghk-text-line-tail-arg> }
-    regex ghk-but-text-line              { \h* 'But'   \h+ <ghk-text-line-tail-arg> }
-    regex ghk-asterix-text-line          { \h* '*'     \h+ <ghk-text-line-tail-arg> }
+    regex ghk-feature-text-line          { \h* <ghk-keyword-feature>  \h* ':' \h+ <ghk-text-line-tail> }
+    regex ghk-example-text-line          { \h* [ <ghk-keyword-example> | <ghk-keyword-scenario> ] \h* ':' \h+ <ghk-text-line-tail> }
+    regex ghk-scenario-outline-text-line { \h* <ghk-keyword-scenario> \h+ [ <ghk-keyword-outline> | <ghk-keyword-template> ] \h* ':' \h+ <ghk-text-line-tail> }
+    regex ghk-rule-text-line             { \h* <ghk-keyword-rule>     \h* ':' \h+ <ghk-text-line-tail> }
+    regex ghk-given-text-line            { \h* <ghk-keyword-given>    \h+ <ghk-text-line-tail-arg> }
+    regex ghk-when-text-line             { \h* <ghk-keyword-when>     \h+ <ghk-text-line-tail-arg> }
+    regex ghk-and-text-line              { \h* <ghk-keyword-and>      \h+ <ghk-text-line-tail-arg> }
+    regex ghk-then-text-line             { \h* <ghk-keyword-then>     \h+ <ghk-text-line-tail-arg> }
+    regex ghk-but-text-line              { \h* <ghk-keyword-but>      \h+ <ghk-text-line-tail-arg> }
+    regex ghk-asterix-text-line          { \h* <ghk-keyword-asterisk> \h+ <ghk-text-line-tail-arg> }
     regex ghk-text-line-tail-arg         { <ghk-text-line-tail> [ \n [ <ghk-doc-string> || <md-table-block> ] ]? }
     regex ghk-text-line-tail             { <-[\v]>+ }
     regex ghk-text-element               { <-[\v]>* }
-    regex ghk-description-line           { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim ~~ / ^ [ Rule | Exmaple | Scenario | Given | When | Then | But | And | Feature | Background ] \h* ':'/}> }
+    regex ghk-description-line           { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim ~~ / ^ [ Rule | Example | Scenario | Given | When | Then | But | And | Feature | Background ] \h* ':'/}> }
 
+    token ghk-keyword-and { 'And' }
+    token ghk-keyword-asterisk { '*' }
+    token ghk-keyword-but { 'But' }
+    token ghk-keyword-example { 'Example' }
+    token ghk-keyword-feature { 'Feature' }
+    token ghk-keyword-given { 'Given' }
+    token ghk-keyword-outline { 'Outline' }
+    token ghk-keyword-rule { 'Rule' }
+    token ghk-keyword-scenario { 'Scenario' }
+    token ghk-keyword-template { 'Template' }
+    token ghk-keyword-then { 'Then' }
+    token ghk-keyword-when { 'When' }
 }
