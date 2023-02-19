@@ -15,9 +15,10 @@
     "Test"
   ],
   "provides": {
-    "Gherkin::Actions::Raku": "lib/Gherkin/Actions/Raku.rakumod",
+    "Gherkin::Actions::Raku::Template": "lib/Gherkin/Actions/Raku/Template.rakumod",
     "Gherkin::Grammar": "lib/Gherkin/Grammar.rakumod",
-    "Gherkin::Grammarish": "lib/Gherkin/Grammarish.rakumod"
+    "Gherkin::Grammarish": "lib/Gherkin/Grammarish.rakumod",
+    "Gherkin::Grammar::Internationalization": "lib/Gherkin/Grammar/Internationalization.rakumod"
   },
   "resources": [],
   "license": "Artistic-2.0",
