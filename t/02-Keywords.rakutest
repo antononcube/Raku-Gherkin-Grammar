@@ -18,4 +18,8 @@ isa-ok gherkin-keywords('russian'), Map, 'russian';
 isa-ok gherkin-keywords('ru'), Map, 'ru';
 isa-ok gherkin-keywords('blah'), Empty, 'blah';
 
+isa-ok gherkin-keywords(), Map, 'Empty argument list';
+my $res = reduce( &[&&], <en bg ru de>.map({ $_ (elem) gherkin-keywords() }).List );
+is $res, True, 'Expected keys in result from empty argument list';
+
 done-testing;

@@ -1032,11 +1032,22 @@ my %gherkinKeywords =
         'when'             => /'*'|'當'/,
     };
 
-
+#===========================================================
 my %langAbbrToName = %gherkinKeywords.map({ $_.key.lc => $_.value<name>.raku.substr(2, *-2).lc });
 my %langNameToAbbr = %gherkinKeywords.map({ $_.value<name>.raku.substr(2, *-2).lc => $_.key.lc });
 
-sub gherkin-keywords(Str:D $lang) is export {
+#===========================================================
+proto gherkin-keywords(|) is export {*}
+
+multi sub gherkin-keywords() {
+    return %gherkinKeywords;
+}
+
+multi sub gherkin-keywords(Any) {
+    return gherkin-keywords('en');
+}
+
+multi sub gherkin-keywords(Str:D $lang) {
     my $res = %gherkinKeywords{$lang.lc} // %gherkinKeywords{%langNameToAbbr{$lang.lc} // 'xxdGY&*&^wre'} // Empty;
     note "Unknown language '$lang'." unless $res ~~ Map;
     return $res;
