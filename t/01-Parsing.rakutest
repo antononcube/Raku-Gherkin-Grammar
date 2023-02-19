@@ -15,9 +15,21 @@ plan *;
 #-----------------------------------------------------------
 ok Gherkin::Grammar.parse('Example: Multiple Givens', rule => 'ghk-example-text-line');
 
-
 #-----------------------------------------------------------
 ## 2
+#-----------------------------------------------------------
+
+my $text0 = q:to/END/;
+Feature: Calculation
+    Example: One plus one
+    When 1 + 1
+    Then 2
+END
+
+ok gherkin-parse($text0), 'Feature: Calculation';
+
+#-----------------------------------------------------------
+## 3
 #-----------------------------------------------------------
 my $text2 = q:to/END/;
 Example: Multiple Givens
@@ -33,7 +45,7 @@ ok gherkin-subparse($text2, rule => 'ghk-example-block');
 
 
 #-----------------------------------------------------------
-## 3
+## 4
 #-----------------------------------------------------------
 my $text3 = q:to/END/;
 Feature: Highlander
@@ -58,7 +70,7 @@ ok gherkin-subparse($text3);
 
 
 #-----------------------------------------------------------
-## 4
+## 5
 #-----------------------------------------------------------
 my $text4 = q:to/END/;
   """
@@ -72,7 +84,7 @@ ok Gherkin::Grammar.parse($text4, rule => 'ghk-doc-string');
 
 
 #-----------------------------------------------------------
-## 5
+## 6
 #-----------------------------------------------------------
 my $text5 = q:to/END/;
 Given a blog post named "Random" with Markdown body
@@ -88,7 +100,7 @@ ok Gherkin::Grammar.parse($text5, rule => 'ghk-given-block');
 
 
 #-----------------------------------------------------------
-## 6
+## 7
 #-----------------------------------------------------------
 my $text6 = q:to/END/;
 Feature: Random Markdown
@@ -107,7 +119,7 @@ ok gherkin-parse($text6);
 
 
 #-----------------------------------------------------------
-## 7
+## 8
 #-----------------------------------------------------------
 my $text7 = q:to/END/;
 Given Table of company contacts:
