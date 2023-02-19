@@ -45,5 +45,5 @@ multi sub gherkin-interpret(Str:D $spec,
                              ) is export {
     if $actions.isa(Whatever) || $actions ~~ Str && $actions.lc eq 'raku' { $actions = $actionsObj; }
     if $lang.isa(Whatever) { $lang = 'English'; }
-    return $pCOMMAND.parse($spec, :$rule, :$actions, args => $rule eq 'TOP' ?? ($lang,) !! Empty).made;
+    return $pCOMMAND.parse($spec ~ "\n", :$rule, :$actions, args => $rule eq 'TOP' ?? ($lang,) !! Empty).made;
 }
