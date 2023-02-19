@@ -1,0 +1,109 @@
+use v6.d;
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use Gherkin::Grammar;
+
+#===========================================================
+
+plan *;
+
+#-----------------------------------------------------------
+## 1
+#-----------------------------------------------------------
+ok Gherkin::Grammar.parse('Example: Multiple Givens', rule => 'ghk-example-text-line');
+
+
+#-----------------------------------------------------------
+## 2
+#-----------------------------------------------------------
+my $text2 = q:to/END/;
+Example: Multiple Givens
+  Given one thing
+  Given another thing
+  Given yet another thing
+  When I open my eyes
+  Then I should see something
+  Then I shouldn't see something else
+END
+
+ok gherkin-subparse($text2, rule => 'ghk-example-block');
+
+
+#-----------------------------------------------------------
+## 3
+#-----------------------------------------------------------
+my $text3 = q:to/END/;
+Feature: Highlander
+    From the Movie "Highlander" (1986)
+    Or the TV series.
+
+  Rule: There can be only One
+
+    Example: Only One -- More than one alive
+      Given there are 3 ninjas
+      And there are more than one ninja alive
+      When 2 ninjas meet, they will fight
+      Then one ninja dies (but not me)
+      And there is one ninja less alive
+
+    Example: Only One -- One alive
+      Given there is only 1 ninja alive
+      Then he (or she) will live forever ;-)
+END
+
+ok gherkin-subparse($text3);
+
+
+#-----------------------------------------------------------
+## 4
+#-----------------------------------------------------------
+my $text4 = q:to/END/;
+  """
+  New block
+  ===============
+  Here is a paragraph...
+  Or two.
+  """
+END
+ok Gherkin::Grammar.parse($text4, rule => 'ghk-doc-string');
+
+
+#-----------------------------------------------------------
+## 5
+#-----------------------------------------------------------
+my $text5 = q:to/END/;
+Given a blog post named "Random" with Markdown body
+  """
+  New block
+  ===============
+  Here is a paragraph...
+  Or two.
+  """
+END
+
+ok Gherkin::Grammar.parse($text5, rule => 'ghk-given-block');
+
+
+#-----------------------------------------------------------
+## 6
+#-----------------------------------------------------------
+my $text6 = q:to/END/;
+Feature: Random Markdown
+Example: Pass it
+Given a blog post named "Random" with Markdown body
+  """
+  New block
+  ===============
+  Here is a paragraph...
+  Or two.
+  """
+Then Squish into "MD"
+END
+
+ok gherkin-parse($text6);
+
+
+done-testing;
