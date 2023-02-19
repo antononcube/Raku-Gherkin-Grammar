@@ -19,19 +19,19 @@ ok Gherkin::Grammar.parse('Example: Multiple Givens', rule => 'ghk-example-text-
 ## 2
 #-----------------------------------------------------------
 
-my $text0 = q:to/END/;
+my $text2 = q:to/END/;
 Feature: Calculation
     Example: One plus one
     When 1 + 1
     Then 2
 END
 
-ok gherkin-parse($text0), 'Feature: Calculation';
+ok gherkin-parse($text2), 'Feature: Calculation';
 
 #-----------------------------------------------------------
 ## 3
 #-----------------------------------------------------------
-my $text2 = q:to/END/;
+my $text3 = q:to/END/;
 Example: Multiple Givens
   Given one thing
   Given another thing
@@ -41,13 +41,13 @@ Example: Multiple Givens
   Then I shouldn't see something else
 END
 
-ok gherkin-subparse($text2, rule => 'ghk-example-block');
+ok gherkin-subparse($text3, rule => 'ghk-example-block');
 
 
 #-----------------------------------------------------------
 ## 4
 #-----------------------------------------------------------
-my $text3 = q:to/END/;
+my $text4 = q:to/END/;
 Feature: Highlander
     From the Movie "Highlander" (1986)
     Or the TV series.
@@ -66,13 +66,13 @@ Feature: Highlander
       Then he (or she) will live forever ;-)
 END
 
-ok gherkin-subparse($text3);
+ok gherkin-subparse($text4);
 
 
 #-----------------------------------------------------------
 ## 5
 #-----------------------------------------------------------
-my $text4 = q:to/END/;
+my $text5 = q:to/END/;
   """
   New block
   ===============
@@ -80,13 +80,13 @@ my $text4 = q:to/END/;
   Or two.
   """
 END
-ok Gherkin::Grammar.parse($text4, rule => 'ghk-doc-string');
+ok Gherkin::Grammar.parse($text5, rule => 'ghk-doc-string');
 
 
 #-----------------------------------------------------------
 ## 6
 #-----------------------------------------------------------
-my $text5 = q:to/END/;
+my $text6 = q:to/END/;
 Given a blog post named "Random" with Markdown body
   """
   New block
@@ -96,13 +96,13 @@ Given a blog post named "Random" with Markdown body
   """
 END
 
-ok Gherkin::Grammar.parse($text5, rule => 'ghk-given-block');
+ok Gherkin::Grammar.parse($text6, rule => 'ghk-given-block');
 
 
 #-----------------------------------------------------------
 ## 7
 #-----------------------------------------------------------
-my $text6 = q:to/END/;
+my $text7 = q:to/END/;
 Feature: Random Markdown
 Example: Pass it
 Given a blog post named "Random" with Markdown body
@@ -115,13 +115,13 @@ Given a blog post named "Random" with Markdown body
 Then Squish into "MD"
 END
 
-ok gherkin-parse($text6);
+ok gherkin-parse($text7);
 
 
 #-----------------------------------------------------------
 ## 8
 #-----------------------------------------------------------
-my $text7 = q:to/END/;
+my $text8 = q:to/END/;
 Given Table of company contacts:
   | Company                      | Contact           | Country |
   |------------------------------|-------------------|---------|
@@ -134,6 +134,20 @@ Given Table of company contacts:
 
 END
 
-ok gherkin-parse($text7, rule => 'ghk-given-block');
+ok gherkin-parse($text8, rule => 'ghk-given-block');
+
+#-----------------------------------------------------------
+## 9
+#-----------------------------------------------------------
+
+my $text9 = q:to/END/;
+@calc @arith
+Feature: Calculation
+    Example: One plus one
+    When 1 + 1
+    Then 2
+END
+
+ok gherkin-parse($text9), 'tagged Feature: Calculation';
 
 done-testing;
