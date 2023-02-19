@@ -1,0 +1,21 @@
+use v6.d;
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use Gherkin::Grammar::Internationalization;
+
+#===========================================================
+
+plan *;
+
+isa-ok gherkin-keywords('en'), Map, 'en';
+isa-ok gherkin-keywords('EN'), Map, 'EN';
+isa-ok gherkin-keywords('English'), Map, 'English';
+isa-ok gherkin-keywords('Bulgarian'), Map, 'Bulgarian';
+isa-ok gherkin-keywords('russian'), Map, 'russian';
+isa-ok gherkin-keywords('ru'), Map, 'ru';
+isa-ok gherkin-keywords('blah'), Empty, 'blah';
+
+done-testing;
