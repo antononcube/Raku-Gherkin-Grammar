@@ -22,7 +22,7 @@ role Gherkin::Grammarish {
 
     regex ghk-example-block {
         <ghk-example-text-line> \n
-        <ghk-given-block>
+        <ghk-given-block>?
         <ghk-when-block>?
         <ghk-then-block>
         \n*
@@ -90,7 +90,7 @@ role Gherkin::Grammarish {
     regex ghk-description-line           { $<text>=(<-[\v]>+) <!{ $<text>.Str.trim ~~ / ^ [ Rule | Example | Scenario | Given | When | Then | But | And | Feature | Background ] \h* ':'/}> }
 
     token ghk-keyword-and { 'And' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<and> }> }
-    token ghk-keyword-asterisk { '*' || (\S+) <?{ $0.Str ~~ gherkin-keywords($*lang)<asterisk> }> }
+    token ghk-keyword-asterisk { '*' }
     token ghk-keyword-but { 'But' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<but> }> }
     token ghk-keyword-example { 'Example' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<example> }> }
     token ghk-keyword-feature { 'Feature' || (\w+) <?{ $0.Str ~~ gherkin-keywords($*lang)<feature> }> }
