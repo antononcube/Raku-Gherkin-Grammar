@@ -39,7 +39,7 @@ role Gherkin::Grammarish {
         | <ghk-given-text-line>
         | <ghk-and-text-line>
         | <ghk-but-text-line>
-        | <ghk-asterix-text-line>
+        | <ghk-asterisk-text-line>
     }
 
     regex ghk-when-block {
@@ -51,7 +51,7 @@ role Gherkin::Grammarish {
         | <ghk-when-text-line>
         | <ghk-and-text-line>
         | <ghk-but-text-line>
-        | <ghk-asterix-text-line>
+        | <ghk-asterisk-text-line>
     }
 
     regex ghk-then-block {
@@ -63,7 +63,7 @@ role Gherkin::Grammarish {
         | <ghk-then-text-line>
         | <ghk-and-text-line>
         | <ghk-but-text-line>
-        | <ghk-asterix-text-line>
+        | <ghk-asterisk-text-line>
     }
 
     regex ghk-feature-description {
@@ -85,7 +85,7 @@ role Gherkin::Grammarish {
     regex ghk-and-text-line              { \h* <ghk-keyword-and>      \h+ <ghk-text-line-tail-arg> }
     regex ghk-then-text-line             { \h* <ghk-keyword-then>     \h+ <ghk-text-line-tail-arg> }
     regex ghk-but-text-line              { \h* <ghk-keyword-but>      \h+ <ghk-text-line-tail-arg> }
-    regex ghk-asterix-text-line          { \h* <ghk-keyword-asterisk> \h+ <ghk-text-line-tail-arg> }
+    regex ghk-asterisk-text-line         { \h* <ghk-keyword-asterisk> \h+ <ghk-text-line-tail-arg> }
     regex ghk-text-line-tail-arg         { <ghk-text-line-tail> [ \n [ <ghk-doc-string> || <md-table-block> ] ]? }
     regex ghk-text-line-tail             { <-[\v]>+ }
     regex ghk-text-element               { <-[\v]>* }
