@@ -66,26 +66,6 @@ END
 
 gherkin-interpret($text0);
 ```
-```
-# use Test;
-# 
-# #------------------------------------------------------------
-# 
-# proto Background(@cmdFuncPairs) {*}
-# proto ScenarioOutline(@cmdFuncPairs) {*}
-# proto Given(Str:D $cmd, |) {*}
-# proto When(Str:D $cmd, |) {*}
-# proto Then(Str:D $cmd, |) {*}
-# 
-# 
-# #------------------------------------------------------------
-# 
-# # Example : One plus one
-# 
-# multi sub When( "1 + 1" ) { }
-# 
-# multi sub Then( "2" ) { }
-```
 
 ### Internationalization
 
@@ -106,26 +86,6 @@ END
 
 gherkin-interpret($ru-text, lang => 'Russian');
 ```
-```
-# use Test;
-# 
-# #------------------------------------------------------------
-# 
-# proto Background(@cmdFuncPairs) {*}
-# proto ScenarioOutline(@cmdFuncPairs) {*}
-# proto Given(Str:D $cmd, |) {*}
-# proto When(Str:D $cmd, |) {*}
-# proto Then(Str:D $cmd, |) {*}
-# 
-# 
-# #------------------------------------------------------------
-# 
-# # Example : одно плюс одно
-# 
-# multi sub When( "1 + 1" ) { }
-# 
-# multi sub Then( "2" ) { }
-```
 
 ### Arguments
 
@@ -141,14 +101,6 @@ The package provides a Command Line Interface (CLI) script. Here is its help mes
 
 ```shell
 gherkin-interpretation --help
-```
-```
-# Usage:
-#   gherkin-interpretation <fileName> [-l|--from-lang=<Str>] [-t|--to-lang=<Str>] [-o|--output=<Str>] -- Interprets Gherkin specifications.
-#   
-#     -l|--from-lang=<Str>    Natural language in which the feature specification is written in. [default: 'English']
-#     -t|--to-lang=<Str>      Language to interpret (translate) the specification to. [default: 'Raku']
-#     -o|--output=<Str>       File to place the interpretation to. (If '-' stdout is used.) [default: '-']
 ```
 
 ------
