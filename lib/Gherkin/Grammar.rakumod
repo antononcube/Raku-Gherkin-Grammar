@@ -1,7 +1,8 @@
 use v6.d;
 
 use Gherkin::Grammarish;
-use Gherkin::Actions::Raku;
+use Gherkin::Grammar::Internationalization;
+use Gherkin::Actions::Raku::Template;
 use Markdown::Grammar;
 
 grammar Gherkin::Grammar
@@ -13,20 +14,22 @@ grammar Gherkin::Grammar
 #-----------------------------------------------------------
 my $pCOMMAND = Gherkin::Grammar;
 
-my $actionsObj = Gherkin::Actions::Raku.new();
+my $actionsObj = Gherkin::Actions::Raku::Template.new();
 
 sub gherkin-parse(Str:D $spec,
                    Str:D :$rule = 'TOP',
-                   Bool :$extended = True
+                   :$lang is copy = Whatever
                    ) is export {
-    return $pCOMMAND.parse($spec ~ "\n", :$rule, args => $rule eq 'TOP' ?? ($extended,) !! Empty);
+    if $lang.isa(Whatever) { $lang = 'English'; }
+    return $pCOMMAND.parse($spec ~ "\n", :$rule, args => $rule eq 'TOP' ?? ($lang,) !! Empty);
 }
 
 sub gherkin-subparse(Str:D $spec,
                       Str:D :$rule = 'TOP',
-                      Bool :$extended = True
+                      :$lang is copy = Whatever
                       ) is export {
-    return $pCOMMAND.subparse($spec ~ "\n", :$rule, args => $rule eq 'TOP' ?? ($extended,) !! Empty);
+    if $lang.isa(Whatever) { $lang = 'English'; }
+    return $pCOMMAND.subparse($spec ~ "\n", :$rule, args => $rule eq 'TOP' ?? ($lang,) !! Empty);
 }
 
 #| Conversion of Gherkin specification into code.
@@ -38,8 +41,9 @@ proto gherkin-interpret(|) is export {*}
 multi sub gherkin-interpret(Str:D $spec,
                              Str:D :$rule = 'TOP',
                              :target(:$actions) is copy = $actionsObj,
-                             Bool :$extended = False
+                             :$lang is copy = Whatever
                              ) is export {
     if $actions.isa(Whatever) || $actions ~~ Str && $actions.lc eq 'raku' { $actions = $actionsObj; }
-    return $pCOMMAND.parse($spec, :$rule, :$actions, args => $rule eq 'TOP' ?? ($extended,) !! Empty).made;
+    if $lang.isa(Whatever) { $lang = 'English'; }
+    return $pCOMMAND.parse($spec, :$rule, :$actions, args => $rule eq 'TOP' ?? ($lang,) !! Empty).made;
 }
