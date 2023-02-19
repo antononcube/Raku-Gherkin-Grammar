@@ -104,7 +104,7 @@ class Gherkin::Actions::Raku::Template {
     }
 
     method make-preface() {
-        my $res = "use Test;\n\n#{'-' x 60}\n\n" ~ $protos ~ "\n\n#{'-' x 60}\n\n";
+        my $res = "use Test;\n\n#{'-' x 60}\n\n" ~ $protos ~ "\n\n#{'-' x 60}";
         return $res;
     }
 }
