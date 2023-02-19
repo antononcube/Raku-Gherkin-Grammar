@@ -11,14 +11,18 @@ role Gherkin::Grammarish {
         [<ghk-tag-line>? \n]?
         <ghk-feature-text-line> \n+
         <ghk-feature-description>? \n*
-        [ <ghk-rule-block> || <ghk-example-block> ]
+        [ <ghk-rule-block> || <ghk-example-block-list> ]
         \n*
     }
 
     regex ghk-rule-block {
         <ghk-rule-text-line> \n+
-        <ghk-example-block>+
+        <ghk-example-block-list>
         \n*
+    }
+
+    regex ghk-example-block-list {
+        <ghk-example-block>+
     }
 
     regex ghk-example-block {
