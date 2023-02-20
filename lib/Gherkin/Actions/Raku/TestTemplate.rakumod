@@ -3,7 +3,7 @@ use v6.d;
 use Data::Reshapers;
 
 constant $protos = q:to/END/;
-proto sub Background(@cmdFuncPairs) {*}
+proto sub Background($descr) {*}
 proto sub ScenarioOutline(@cmdFuncPairs) {*}
 proto sub Example($descr) {*}
 proto sub Given(Str:D $cmd, |) {*}
@@ -13,6 +13,9 @@ END
 
 
 class Gherkin::Actions::Raku::TestTemplate {
+
+    has Str $!backgroundDescr = '';
+
     method TOP($/) {
         make $/.values[0].made;
     }
@@ -29,8 +32,35 @@ class Gherkin::Actions::Raku::TestTemplate {
     }
 
     #------------------------------------------------------
+    # Basically a degenerated version of ghk-example-block.
+    method ghk-background-block($/) {
+        my $add-is = False;
+        my $descr = $<ghk-background-text-line><ghk-text-line-tail>.made.trim;
+        my @res;
+
+        with $<ghk-given-block> { @res.append( $<ghk-given-block>.made ); }
+
+        with $<ghk-when-block> { @res.append( $<ghk-when-block>.made ); }
+
+        with $<ghk-then-block> { $add-is = True; @res.append( $<ghk-then-block>.made ); }
+
+        my $res = $<ghk-background-text-line>.made ~ "\n" ~
+                "#{'-' x 60}\n\n" ~
+                @res.join("\n\n") ~ "\n\n" ~
+                self.make-background-sub($descr, @res, $add-is);
+
+        $!backgroundDescr = $descr;
+
+        make $res;
+    }
+
+    method ghk-background-text-line ($/) {
+        make '# Background : ' ~  $<ghk-text-line-tail>.made;
+    }
+
+    #------------------------------------------------------
     method ghk-example-block-list($/) {
-        make $<ghk-example-block>>>.made.join("\n\n#{'=' x 60}\n");
+        make [ $<ghk-background-block>.made, |$<ghk-example-block>>>.made].join("\n\n#{'=' x 60}\n");
     }
 
     method ghk-example-block($/) {
@@ -62,7 +92,7 @@ class Gherkin::Actions::Raku::TestTemplate {
      }
     method ghk-given-block-element($/) { make $/.values[0].made.subst(' And(', ' Given(');; }
     method ghk-given-text-line($/) {
-        make self.make-sub-call('Given', $<ghk-text-line-tail-arg>.made);
+        make self.make-sub-definition('Given', $<ghk-text-line-tail-arg>.made);
     }
 
     #------------------------------------------------------
@@ -76,7 +106,7 @@ class Gherkin::Actions::Raku::TestTemplate {
     }
     method ghk-when-block-element($/) { make $/.values[0].made.subst(' And(', ' When(');; }
     method ghk-when-text-line($/) {
-        make self.make-sub-call('When', $<ghk-text-line-tail-arg>.made);
+        make self.make-sub-definition('When', $<ghk-text-line-tail-arg>.made);
     }
 
     #------------------------------------------------------
@@ -88,15 +118,15 @@ class Gherkin::Actions::Raku::TestTemplate {
     }
     method ghk-then-block-element($/) { make $/.values[0].made.subst(' And(', ' Then('); }
     method ghk-then-text-line($/) {
-        make self.make-sub-call('Then', $<ghk-text-line-tail-arg>.made);
+        make self.make-sub-definition('Then', $<ghk-text-line-tail-arg>.made);
     }
 
     #------------------------------------------------------
     method ghk-and-text-line($/) {
-        make self.make-sub-call('And', $<ghk-text-line-tail-arg>.made);
+        make self.make-sub-definition('And', $<ghk-text-line-tail-arg>.made);
     }
     method ghk-asterisk-text-line($/) {
-        make self.make-sub-call('And', $<ghk-text-line-tail-arg>.made);
+        make self.make-sub-definition('And', $<ghk-text-line-tail-arg>.made);
     }
 
     #------------------------------------------------------
@@ -127,20 +157,46 @@ class Gherkin::Actions::Raku::TestTemplate {
     }
 
     #------------------------------------------------------
-    multi method make-sub-call(Str:D $type, @cmd) {
+    multi method make-sub-definition(Str:D $type, @cmd) {
         my $res = "multi sub $type\( {|@cmd} \) \{\}";
         return $res;
     }
 
-    multi method make-sub-call(Str:D $type, Str:D $cmd) {
-        my $res = "multi sub $type\( '$cmd' \) \{\}";
+    multi method make-sub-call(Str:D $type, @cmd) {
+        my $res = "$type\( {|@cmd} \);";
         return $res;
     }
 
+    multi method make-sub-definition(Str:D $type, Str:D $cmd) {
+        my $res = "multi sub $type\( \$cmd where * eq '$cmd' \) \{\}";
+        return $res;
+    }
+
+    multi method make-sub-call(Str:D $type, Str:D $cmd) {
+        my $res = "$type\( $cmd' \);";
+        return $res;
+    }
+
+    multi method make-background-sub($descr, @lines, $add-is) {
+        return self.make-execution-sub('Background', $descr, @lines, $add-is);
+    }
+
     multi method make-example-sub($descr, @lines) {
-        my $res = "multi sub Example('$descr') \{";
-        $res ~= "\n\t" ~ @lines.map({ $_.subst('multi sub', '').subst('{}', '').trim ~ ';' }).join("\n\t");
-        $res ~= "\n}\n\nis Example(\'$descr\'), True, '$descr';";
+        return self.make-execution-sub('Example', $descr, @lines, True);
+    }
+
+    multi method make-execution-sub($type, $descr, @lines, Bool $add-is) {
+        my $res = "multi sub $type\('$descr') \{";
+        $res ~= "\n\t" ~ @lines.map({ $_.subst('multi sub', '').subst('$cmd where * eq ', '').subst('{}', '').trim ~ ';' }).join("\n\t");
+        $res ~= "\n}";
+
+        if $add-is {
+            if $!backgroundDescr {
+                $res ~= "\n\nBackground('$!backgroundDescr');";
+            }
+            $res ~= "\n\nis $type\(\'$descr\'), True, '$descr';";
+        }
+
         return $res;
     }
 
