@@ -8,3 +8,7 @@ Background: Load data
 Scenario: Group and count
     When group by passengerSex; counts
     Then result is a hash
+
+Scenario: Slicing
+    When take the elements from 12 to 511
+    Then the result length is "500"

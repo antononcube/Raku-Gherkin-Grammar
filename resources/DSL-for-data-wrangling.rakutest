@@ -45,7 +45,7 @@ multi sub Then(
 
 multi sub Background('Load data') {
     Given('target is "raku"');
-    Then('titanic dataset exists');
+    Then('titanic dataset exists') and
     Then('the columns of the titanic dataset are "id passengerAge passengerClass passengerSex passengerSurvival"');
 }
 
@@ -54,16 +54,18 @@ is Background('Load data'), True, 'Load data';
 #============================================================
 # Example : Group and count
 #------------------------------------------------------------
-my $parseResult;
+my $parseResult1;
 
 multi sub When($cmd where $cmd eq 'group by passengerSex; counts') {
-    $parseResult = ToDataQueryWorkflowCode("DSL TARGET $target; use @dsTitanic;" ~ $cmd);
+    $parseResult1 = ToDataQueryWorkflowCode("DSL TARGET $target; use @dsTitanic;" ~ $cmd);
 }
 
 multi sub Then('result is a hash') {
     use MONKEY-SEE-NO-EVAL;
+    # The code generated code uses the variables $obj
     my $obj;
-    return EVAL($parseResult) ~~ Hash;
+    EVAL($parseResult1);
+    $obj ~~ Hash;
 }
 
 multi sub Example('Group and count') {
@@ -74,5 +76,34 @@ multi sub Example('Group and count') {
 Background('Load data');
 
 is Example('Group and count'), True, 'Group and count';
+
+#============================================================
+# Example : Slicing
+#------------------------------------------------------------
+my $parseResult2;
+
+multi sub When( $cmd where * eq 'take the elements from 12 to 511' ) {
+    $parseResult2 = ToDataQueryWorkflowCode("DSL TARGET $target; use @dsTitanic;" ~ $cmd);
+}
+
+multi sub Then( $cmd where *.starts-with('the result length is')) {
+    use MONKEY-SEE-NO-EVAL;
+    if $cmd ~~ / \"(<-["]>+)\" / {
+        my $obj;
+        EVAL($parseResult2);
+        say $obj.elems;
+        return $obj.elems == $0.Str.Int;
+    }
+    return False;
+}
+
+multi sub Example('Slicing') {
+    When( 'take the elements from 12 to 511' );
+    Then( 'the result length is "500"' );
+}
+
+Background('Load data');
+
+is Example('Slicing'), True, 'Slicing';
 
 done-testing;
