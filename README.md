@@ -2,12 +2,12 @@
 
 This repository has the Raku package for 
 [Gherkin](https://en.wikipedia.org/wiki/Cucumber_(software)#Gherkin_language)
-grammar and interpretations.
+test specifications parsing and interpretations.
 
 [Gherkin](https://en.wikipedia.org/wiki/Cucumber_(software)#Gherkin_language)
 is the language of the 
-[Cucumber framework](https://cucumber.io), [Wk1] 
-that is used to 
+[Cucumber framework](https://cucumber.io), [Wk1],
+that is used to do
 [Behavior-Driven Development (BDD)](https://en.wikipedia.org/wiki/Behavior-driven_development), [Wk2].
 
 The Raku package 
@@ -15,7 +15,7 @@ The Raku package
 aims to provide a "full-blown" specification-and-execution framework in Raku like the typical 
 Cucumber functionalities in other languages. (Ruby, Java, etc.) 
 
-This package, "Gherkin::Grammar", aims to provide:
+This package, "Gherkin::Grammar" takes a minimalist perspective; it aims to provide:
 
 - Grammar (and roles) for parsing Gherkin specifications 
 - Test file template generation 
@@ -30,7 +30,7 @@ The package provides the functions:
 - `gherkin-interpret`
 
 The Raku outputs of `gherkin-interpret` are test file templates that after filling-in
-would provide tests correspond to the input specifications (given in Gherkin.)
+would provide tests that correspond to the input specifications.
 
 **Remark:** A good introduction to the Cucumber / Gherkin approach and workflows is the 
 [README](https://github.com/robertlemmen/raku-cucumis-sextus#readme)
@@ -61,7 +61,7 @@ zef install https://github.com/antononcube/Raku-Gherkin-Grammar
 ## Workflow
 
 The package follows the *general* Cucumber workflow, but some elements are less automated.
-Here is flow chart
+Here is a flowchart:
 
 ```mermaid
 flowchart TD
@@ -96,7 +96,7 @@ Here is corresponding narration:
 
 ## Usage examples
 
-Here is a basic (and short) Gherkin spec parsing example:
+Here is a basic (and short) Gherkin spec interpretation example:
 
 ```perl6
 use Gherkin::Grammar;
@@ -147,8 +147,8 @@ gherkin-interpret($text0);
 
 ### Internationalization
 
-The package provides provides internationalization using different languages.
-The (initial) internationalization keyword-regexes were taken from [RLp1].
+The package provides internationalization using different languages.
+The (initial) internationalization keyword-regexes data structure was taken from [RLp1].
 (See the file ["I18n.rakumod"](https://github.com/robertlemmen/raku-cucumis-sextus/blob/master/lib/CucumisSextus/I18n.rakumod).)
 
 Here is an example with Russian:
@@ -218,7 +218,7 @@ and
 provide a fully worked example of how this package can be used 
 to implement Cucumber framework workflows.
 
-**Remark:** The Cucumber framework(s) expect Gherkin specifications to be written in 
+**Remark:** The Cucumber framework(s) expect Gherkin test specifications to be written in 
 files with extension ".feature".
 
 ------
