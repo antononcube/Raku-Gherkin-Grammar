@@ -1,0 +1,78 @@
+use v6.d;
+
+use Data::ExampleDatasets;
+use Data::Reshapers;
+use Data::Summarizers;
+use DSL::English::DataQueryWorkflows;
+
+#============================================================
+
+proto sub Background($descr) {*}
+proto sub ScenarioOutline(@cmdFuncPairs) {*}
+proto sub Example($descr) {*}
+proto sub Given(Str:D $cmd, |) {*}
+proto sub When(Str:D $cmd, |) {*}
+proto sub Then(Str:D $cmd, |) {*}
+
+#============================================================
+
+use Test;
+plan *;
+
+#============================================================
+# Background : Load data
+#------------------------------------------------------------
+my Str $target;
+
+multi sub Given('target is "raku"') {
+    $target = 'Raku::Reshapers';
+}
+
+my @dsTitanic;
+
+multi sub Then('titanic dataset exists') {
+    @dsTitanic = get-titanic-dataset;
+    return @dsTitanic ~~ Array;
+}
+
+multi sub Then(
+        $cmd where * eq 'the columns of the titanic dataset are "id passengerAge passengerClass passengerSex passengerSurvival"') {
+    if $cmd ~~ / \"(<-["]>+)\" / {
+        return @dsTitanic.head.keys.sort eq ~$0.split(/\s/)>>.trim.sort.List;
+    }
+    return False;
+}
+
+multi sub Background('Load data') {
+    Given('target is "raku"');
+    Then('titanic dataset exists');
+    Then('the columns of the titanic dataset are "id passengerAge passengerClass passengerSex passengerSurvival"');
+}
+
+is Background('Load data'), True, 'Load data';
+
+#============================================================
+# Example : Group and count
+#------------------------------------------------------------
+my $parseResult;
+
+multi sub When($cmd where $cmd eq 'group by passengerSex; counts') {
+    $parseResult = ToDataQueryWorkflowCode("DSL TARGET $target; use @dsTitanic;" ~ $cmd);
+}
+
+multi sub Then('result is a hash') {
+    use MONKEY-SEE-NO-EVAL;
+    my $obj;
+    return EVAL($parseResult) ~~ Hash;
+}
+
+multi sub Example('Group and count') {
+    When('group by passengerSex; counts');
+    Then('result is a hash');
+}
+
+Background('Load data');
+
+is Example('Group and count'), True, 'Group and count';
+
+done-testing;
