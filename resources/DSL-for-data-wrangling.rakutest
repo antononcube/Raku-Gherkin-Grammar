@@ -91,7 +91,6 @@ multi sub Then( $cmd where *.starts-with('the result length is')) {
     if $cmd ~~ / \"(<-["]>+)\" / {
         my $obj;
         EVAL($parseResult2);
-        say $obj.elems;
         return $obj.elems == $0.Str.Int;
     }
     return False;
