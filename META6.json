@@ -1,7 +1,7 @@
 {
   "name": "Gherkin::Grammar",
   "description": "Gherkin grammar and actions.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "perl": "6.*",
   "authors": [
     "Anton Antonov"
