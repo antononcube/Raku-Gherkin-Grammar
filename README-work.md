@@ -58,6 +58,42 @@ zef install https://github.com/antononcube/Raku-Gherkin-Grammar
 
 ------
 
+## Workflow
+
+The package follows the *general* Cucumber workflow, but some elements are less automated.
+Here is flow chart
+
+```mermaid
+flowchart TD
+    WT["Write tests<br/>(using Gherkin)"] 
+    FG[Fill-in glue code]
+    GTC[Generate test code]
+    ET[Execute tests]
+    FF>Feature file]
+    GG[[Gherkin::Grammar]]
+    TF>Test file]
+    WT ---> GTC ---> FG
+    WT -..-> FF
+    GTC -..- |gherkin-interpret|GG
+    FF -.-> GG
+    GG -..->  TF
+    FG -..- TF
+    FG --> ET
+```
+
+Here is corresponding narration:
+
+1. Write tests using Gherkin specs
+2. Generate test code
+   - Using the package "Gherkin::Grammar".
+3. Fill-in the code of step functions
+4. Execute tests
+5. Revisit (refine) steps 1 and/or 4 as needed
+6. Integrate resulting test file 
+
+
+------
+
 ## Usage examples
 
 Here is a basic (and short) Gherkin spec parsing example:
