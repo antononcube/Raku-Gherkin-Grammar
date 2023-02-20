@@ -15,7 +15,7 @@
     "Test"
   ],
   "provides": {
-    "Gherkin::Actions::Raku::Template": "lib/Gherkin/Actions/Raku/Template.rakumod",
+    "Gherkin::Actions::Raku::TestTemplate": "lib/Gherkin/Actions/Raku/TestTemplate.rakumod",
     "Gherkin::Grammar": "lib/Gherkin/Grammar.rakumod",
     "Gherkin::Grammarish": "lib/Gherkin/Grammarish.rakumod",
     "Gherkin::Grammar::Internationalization": "lib/Gherkin/Grammar/Internationalization.rakumod"

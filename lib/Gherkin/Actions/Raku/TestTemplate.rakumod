@@ -12,7 +12,7 @@ proto Then(Str:D $cmd, |) {*}
 END
 
 
-class Gherkin::Actions::Raku::Template {
+class Gherkin::Actions::Raku::TestTemplate {
     method TOP($/) {
         make $/.values[0].made;
     }

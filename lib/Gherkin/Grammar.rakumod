@@ -2,7 +2,7 @@ use v6.d;
 
 use Gherkin::Grammarish;
 use Gherkin::Grammar::Internationalization;
-use Gherkin::Actions::Raku::Template;
+use Gherkin::Actions::Raku::TestTemplate;
 use Markdown::Grammar;
 
 grammar Gherkin::Grammar
@@ -14,7 +14,7 @@ grammar Gherkin::Grammar
 #-----------------------------------------------------------
 my $pCOMMAND = Gherkin::Grammar;
 
-my $actionsObj = Gherkin::Actions::Raku::Template.new();
+my $actionsObj = Gherkin::Actions::Raku::TestTemplate.new();
 
 sub gherkin-parse(Str:D $spec,
                    Str:D :$rule = 'TOP',
