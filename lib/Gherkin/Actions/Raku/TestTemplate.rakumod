@@ -3,12 +3,12 @@ use v6.d;
 use Data::Reshapers;
 
 constant $protos = q:to/END/;
-proto Background(@cmdFuncPairs) {*}
-proto ScenarioOutline(@cmdFuncPairs) {*}
-proto Example($descr) {*}
-proto Given(Str:D $cmd, |) {*}
-proto When(Str:D $cmd, |) {*}
-proto Then(Str:D $cmd, |) {*}
+proto sub Background(@cmdFuncPairs) {*}
+proto sub ScenarioOutline(@cmdFuncPairs) {*}
+proto sub Example($descr) {*}
+proto sub Given(Str:D $cmd, |) {*}
+proto sub When(Str:D $cmd, |) {*}
+proto sub Then(Str:D $cmd, |) {*}
 END
 
 
