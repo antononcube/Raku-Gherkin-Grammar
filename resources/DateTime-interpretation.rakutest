@@ -25,7 +25,7 @@ multi sub When($cmd) {
     $result = datetime-interpret($cmd);
 }
 
-multi sub Then($cmd where *eq 'the result is DateTime') {
+multi sub Then($cmd where * eq 'the result is DateTime') {
     return $result ~~ DateTime;
 }
 
