@@ -51,7 +51,7 @@ multi sub Example('ISO date') {
 is Example('ISO date'), True, 'ISO date';
 
 #============================================================
-# Example : Full blown date spec
+# Example : Full blown date time spec
 #------------------------------------------------------------
 
 multi sub When( $cmd where * eq 'Sun, 06 Nov 1994 08:49:37 GMT' ) {}
@@ -60,12 +60,12 @@ multi sub Then( $cmd where * eq 'the result is DateTime' ) {}
 
 multi sub Then( $cmd where * eq 'the year is "1994", month is "11", and date "6"' ) {}
 
-multi sub Example('Full blown date spec') {
+multi sub Example('Full blown date time spec') {
 	When( 'Sun, 06 Nov 1994 08:49:37 GMT' );
 	Then( 'the result is DateTime' );
 	Then( 'the year is "1994", month is "11", and date "6"' );
 }
 
-is Example('Full blown date spec'), True, 'Full blown date spec';
+is Example('Full blown date time spec'), True, 'Full blown date time spec';
 
 done-testing;

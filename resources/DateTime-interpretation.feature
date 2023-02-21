@@ -10,7 +10,7 @@ Feature: DateTime interpretation test
     Then the result is DateTime
     And the year is "2032", month is "10", and date "1"
 
-  Scenario: Full blown date spec
+  Scenario: Full blown date time spec
     When Sun, 06 Nov 1994 08:49:37 GMT
     Then the result is DateTime
     And the year is "1994", month is "11", and date "6"
