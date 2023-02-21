@@ -1,0 +1,73 @@
+use v6.d;
+
+use DateTime::Grammar;
+
+#============================================================
+
+proto sub Background($descr) {*}
+proto sub ScenarioOutline(@cmdFuncPairs) {*}
+proto sub Example($descr) {*}
+proto sub Given(Str:D $cmd, |) {*}
+proto sub When(Str:D $cmd, |) {*}
+proto sub Then(Str:D $cmd, |) {*}
+
+#============================================================
+
+use Test;
+plan *;
+
+#============================================================
+# Example : Full date
+#------------------------------------------------------------
+my $result;
+
+multi sub When($cmd) {
+    $result = datetime-interpret($cmd);
+}
+
+multi sub Then($cmd where *eq 'the result is DateTime') {
+    return $result ~~ DateTime;
+}
+
+multi sub Then($cmd where *~~ / ^ 'the year is "' .*? 'month is "' .*? 'and date "' .* /) {
+    if $cmd ~~ / ^ 'the year is' .*? \" (.*?) \" .*? 'month is' .*? \" (.*?) \" .*? 'and date' .*? \" (.*?) \" .*?  / {
+        return $result.year == ~$0.Int &&
+                $result.month == ~$1.Int &&
+                $result.day == ~$2.Int;
+    }
+    return False;
+}
+
+multi sub Example('Full date') {
+    When('2023-02-20T00:00:00Z');
+    Then('the result is DateTime') and
+    Then('the year is "2023", month is "2", and date "20"');
+}
+
+is Example('Full date'), True, 'Full date';
+
+#============================================================
+# Example : ISO date
+#------------------------------------------------------------
+
+multi sub Example('ISO date') {
+    When('2032-10-01');
+    Then('the result is DateTime') and
+    Then('the year is "2032", month is "10", and date "1"');
+}
+
+is Example('ISO date'), True, 'ISO date';
+
+#============================================================
+# Example : Full blown date spec
+#------------------------------------------------------------
+
+multi sub Example('Full blown date spec') {
+    When('Sun, 06 Nov 1994 08:49:37 GMT');
+    Then('the result is DateTime') and
+    Then('the year is "1994", month is "11", and date "6"');
+}
+
+is Example('Full blown date spec'), True, 'Full blown date spec';
+
+done-testing;
