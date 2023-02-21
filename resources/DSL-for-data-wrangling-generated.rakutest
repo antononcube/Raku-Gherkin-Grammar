@@ -1,0 +1,69 @@
+use v6.d;
+
+#============================================================
+
+proto sub Background($descr) {*}
+proto sub ScenarioOutline(@cmdFuncPairs) {*}
+proto sub Example($descr) {*}
+proto sub Given(Str:D $cmd, |) {*}
+proto sub When(Str:D $cmd, |) {*}
+proto sub Then(Str:D $cmd, |) {*}
+
+#============================================================
+
+use Test;
+plan *;
+
+#============================================================
+# Background : Load data
+#------------------------------------------------------------
+
+multi sub Given( $cmd where * eq 'target is "raku"' ) {}
+
+multi sub Then( $cmd where * eq 'titanic dataset exists' ) {}
+
+multi sub Then( $cmd where * eq 'the columns of the titanic dataset are "id passengerAge passengerClass passengerSex passengerSurvival"' ) {}
+
+multi sub Background('Load data') {
+	Given( 'target is "raku"' );
+	Then( 'titanic dataset exists' );
+	Then( 'the columns of the titanic dataset are "id passengerAge passengerClass passengerSex passengerSurvival"' );
+}
+
+is Background('Load data'), True, 'Load data';
+
+#============================================================
+# Example : Group and count
+#------------------------------------------------------------
+
+multi sub When( $cmd where * eq 'group by passengerSex; counts' ) {}
+
+multi sub Then( $cmd where * eq 'result is a hash' ) {}
+
+multi sub Example('Group and count') {
+	When( 'group by passengerSex; counts' );
+	Then( 'result is a hash' );
+}
+
+Background('Load data');
+
+is Example('Group and count'), True, 'Group and count';
+
+#============================================================
+# Example : Slicing
+#------------------------------------------------------------
+
+multi sub When( $cmd where * eq 'take the elements from 12 to 511' ) {}
+
+multi sub Then( $cmd where * eq 'the result length is "500"' ) {}
+
+multi sub Example('Slicing') {
+	When( 'take the elements from 12 to 511' );
+	Then( 'the result length is "500"' );
+}
+
+Background('Load data');
+
+is Example('Slicing'), True, 'Slicing';
+
+done-testing;

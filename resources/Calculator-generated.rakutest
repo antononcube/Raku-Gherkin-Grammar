@@ -1,0 +1,53 @@
+use v6.d;
+
+#============================================================
+
+proto sub Background($descr) {*}
+proto sub ScenarioOutline(@cmdFuncPairs) {*}
+proto sub Example($descr) {*}
+proto sub Given(Str:D $cmd, |) {*}
+proto sub When(Str:D $cmd, |) {*}
+proto sub Then(Str:D $cmd, |) {*}
+
+#============================================================
+
+use Test;
+plan *;
+
+#============================================================
+# Example : First Key Press on the Display
+#------------------------------------------------------------
+
+multi sub Given( $cmd where * eq 'a new Calculator object' ) {}
+
+multi sub Given( $cmd where * eq 'having pressed 1' ) {}
+
+multi sub Then( $cmd where * eq 'the display should show 1' ) {}
+
+multi sub Example('First Key Press on the Display') {
+	Given( 'a new Calculator object' );
+	Given( 'having pressed 1' );
+	Then( 'the display should show 1' );
+}
+
+is Example('First Key Press on the Display'), True, 'First Key Press on the Display';
+
+#============================================================
+# Example : Addition of two
+#------------------------------------------------------------
+
+multi sub Given( $cmd where * eq 'a new Calculator object' ) {}
+
+multi sub When( $cmd where * eq 'entered "1 + 1"' ) {}
+
+multi sub Then( $cmd where * eq '2' ) {}
+
+multi sub Example('Addition of two') {
+	Given( 'a new Calculator object' );
+	When( 'entered "1 + 1"' );
+	Then( '2' );
+}
+
+is Example('Addition of two'), True, 'Addition of two';
+
+done-testing;
