@@ -60,7 +60,10 @@ class Gherkin::Actions::Raku::TestTemplate {
 
     #------------------------------------------------------
     method ghk-example-block-list($/) {
-        make [ $<ghk-background-block>.made, |$<ghk-example-block>>>.made].join("\n\n#{'=' x 60}\n");
+        my @res;
+        with $<ghk-background-block> { @res.append($<ghk-background-block>.made); }
+        @res.append($<ghk-example-block>>>.made);
+        make @res.join("\n\n#{'=' x 60}\n");
     }
 
     method ghk-example-block($/) {
