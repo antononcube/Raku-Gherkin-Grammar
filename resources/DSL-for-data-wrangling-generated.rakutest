@@ -66,4 +66,29 @@ Background('Load data');
 
 is Example('Slicing'), True, 'Slicing';
 
+#============================================================
+# Example : Long pipeline
+#------------------------------------------------------------
+
+multi sub When( 'execute the pipeline:', '
+      use @dsTitanic;
+      filter by passengerSurvival is "survived";
+      cross tabulate passengerSex vs passengerClass
+      ' ) {}
+
+multi sub Then( $cmd where * eq 'result is a hash' ) {}
+
+multi sub Example('Long pipeline') {
+	When( 'execute the pipeline:', '
+      use @dsTitanic;
+      filter by passengerSurvival is "survived";
+      cross tabulate passengerSex vs passengerClass
+      ' );
+	Then( 'result is a hash' );
+}
+
+Background('Load data');
+
+is Example('Long pipeline'), True, 'Long pipeline';
+
 done-testing;

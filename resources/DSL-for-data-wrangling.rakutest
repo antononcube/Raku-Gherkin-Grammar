@@ -105,4 +105,26 @@ Background('Load data');
 
 is Example('Slicing'), True, 'Slicing';
 
+#============================================================
+# Example : Long pipeline
+#------------------------------------------------------------
+
+multi sub When( 'execute the pipeline:', Str $cmd) {
+    $parseResult1 = ToDataQueryWorkflowCode("DSL TARGET $target;" ~ $cmd);
+    note $parseResult1;
+}
+
+multi sub Example('Long pipeline') {
+    When( 'execute the pipeline:', '
+      use @dsTitanic;
+      filter by passengerSurvival is "survived";
+      cross tabulate passengerSex vs passengerClass
+      ' );
+    Then( 'result is a hash' );
+}
+
+Background('Load data');
+
+is Example('Long pipeline'), True, 'Long pipeline';
+
 done-testing;
