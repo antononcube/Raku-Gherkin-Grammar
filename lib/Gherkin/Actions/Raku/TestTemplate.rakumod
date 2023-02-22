@@ -107,7 +107,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         }
         make @res;
     }
-    method ghk-when-block-element($/) { make $/.values[0].made.subst(' And(', ' When(');; }
+    method ghk-when-block-element($/) { make $/.values[0].made.subst(' And(', ' When('); }
     method ghk-when-text-line($/) {
         make self.make-sub-definition('When', $<ghk-text-line-tail-arg>.made);
     }
@@ -146,6 +146,11 @@ class Gherkin::Actions::Raku::TestTemplate {
     }
 
     #------------------------------------------------------
+    method ghk-doc-string($/) {
+        make $<text>.Str;
+    }
+
+    #------------------------------------------------------
     method md-table-block($/) {
         my @header = $<hearder>.made;
         my @rows = $<rows>>>.made;
@@ -161,7 +166,7 @@ class Gherkin::Actions::Raku::TestTemplate {
 
     #------------------------------------------------------
     multi method make-sub-definition(Str:D $type, @cmd) {
-        my $res = "multi sub $type\( {|@cmd} \) \{\}";
+        my $res = "multi sub $type\( { @cmd.map({ '\'' ~ $_ ~ '\'' }).join(', ') } \) \{\}";
         return $res;
     }
 
