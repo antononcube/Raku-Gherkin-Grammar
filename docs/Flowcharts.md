@@ -52,3 +52,29 @@ flowchart TD
     RGQ ---> |yes|FG
     RGQ ---> END
 ```
+
+------
+
+## Typical Cucumber workflow
+
+```mermaid
+flowchart TD
+    WT["Write tests<br/>(using Gherkin)"] 
+    FG[Fill-in glue code]
+    GC[Glue connection]
+    ET[Execute tests]
+    FF>Feature file]
+    CF[[Cucumber framework]]
+    TF>Test code]
+    WT ---> FG
+    FG -..- |preparation|GC
+    WT -..-> FF
+    GC -..- |preparation|CF
+    FF -.-> CF
+    CF -..-> TF
+    TF -..-> CF
+    FG --> ET
+    ET -..-> |execution|GC
+    GC -..-> |execution|CF
+```
+
