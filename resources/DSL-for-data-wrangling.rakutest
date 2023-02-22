@@ -58,6 +58,7 @@ my $parseResult1;
 
 multi sub When($cmd where $cmd eq 'group by passengerSex; counts') {
     $parseResult1 = ToDataQueryWorkflowCode("DSL TARGET $target; use @dsTitanic;" ~ $cmd);
+    say "Result for:\n```dsl\n$cmd\n```\nis:\n```raku\n$parseResult1\n```";
 }
 
 multi sub Then('result is a hash') {
@@ -84,6 +85,7 @@ my $parseResult2;
 
 multi sub When( $cmd where * eq 'take the elements from 12 to 511' ) {
     $parseResult2 = ToDataQueryWorkflowCode("DSL TARGET $target; use @dsTitanic;" ~ $cmd);
+    say "Result for pipeline:\n```dsl\n{$cmd.lines>>.trim.join("\n")}\n```\nis:\n```raku\n$parseResult2\n```";
 }
 
 multi sub Then( $cmd where *.starts-with('the result length is')) {
@@ -111,7 +113,7 @@ is Example('Slicing'), True, 'Slicing';
 
 multi sub When( 'execute the pipeline:', Str $cmd) {
     $parseResult1 = ToDataQueryWorkflowCode("DSL TARGET $target;" ~ $cmd);
-    note $parseResult1;
+    say "Result for pipeline:\n```dsl\n{$cmd.lines>>.trim.join("\n")}\n```\nis:\n```raku\n$parseResult1\n```";
 }
 
 multi sub Example('Long pipeline') {
