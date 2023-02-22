@@ -70,7 +70,7 @@ is Example('Slicing'), True, 'Slicing';
 # Example : Long pipeline
 #------------------------------------------------------------
 
-multi sub When( 'execute the pipeline:', '
+multi sub When( 'is executed the pipeline:', '
       use @dsTitanic;
       filter by passengerSurvival is "survived";
       cross tabulate passengerSex vs passengerClass
@@ -79,7 +79,7 @@ multi sub When( 'execute the pipeline:', '
 multi sub Then( $cmd where * eq 'result is a hash' ) {}
 
 multi sub Example('Long pipeline') {
-	When( 'execute the pipeline:', '
+	When( 'is executed the pipeline:', '
       use @dsTitanic;
       filter by passengerSurvival is "survived";
       cross tabulate passengerSex vs passengerClass

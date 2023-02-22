@@ -14,7 +14,7 @@ Feature: DSL for data wrangling tests
     Then the result length is "500"
 
   Scenario: Long pipeline
-    When execute the pipeline:
+    When is executed the pipeline:
       """
       use @dsTitanic;
       filter by passengerSurvival is "survived";
