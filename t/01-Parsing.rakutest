@@ -136,11 +136,26 @@ END
 
 ok gherkin-parse($text8, rule => 'ghk-given-block');
 
+
 #-----------------------------------------------------------
 ## 9
 #-----------------------------------------------------------
-
 my $text9 = q:to/END/;
+Given Table datetime specs
+      | Spec      | Result                        |
+      | today     | DateTime.today                |
+      | yesterday | DateTime.today.earlier(:1day) |
+      | tomorrow  | DateTime.today.later(:1day)   |
+END
+
+ok gherkin-parse($text9, rule => 'ghk-given-block');
+
+
+#-----------------------------------------------------------
+## 10
+#-----------------------------------------------------------
+
+my $text10 = q:to/END/;
 @calc @arith
 Feature: Calculation
     Example: One plus one
@@ -148,6 +163,6 @@ Feature: Calculation
     Then 2
 END
 
-ok gherkin-parse($text9), 'tagged Feature: Calculation';
+ok gherkin-parse($text10), 'tagged Feature: Calculation';
 
 done-testing;
