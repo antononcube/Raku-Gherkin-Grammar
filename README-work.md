@@ -1,27 +1,26 @@
 # Gherkin::Grammar Raku package
 
-This repository has the Raku package for 
+This repository has the Raku package for
 [Gherkin](https://en.wikipedia.org/wiki/Cucumber_(software)#Gherkin_language)
 test specifications parsing and interpretations.
 
 [Gherkin](https://en.wikipedia.org/wiki/Cucumber_(software)#Gherkin_language)
-is the language of the 
-[Cucumber framework](https://cucumber.io), [Wk1],
-that is used to do
+is the language of the
+[Cucumber framework](https://cucumber.io), [Wk1], that is used to do
 [Behavior-Driven Development (BDD)](https://en.wikipedia.org/wiki/Behavior-driven_development), [Wk2].
 
-The Raku package 
-["Cucumis Sextus](https://github.com/robertlemmen/raku-cucumis-sextus), [RL1],
-aims to provide a "full-blown" specification-and-execution framework in Raku like the typical 
-Cucumber functionalities in other languages. (Ruby, Java, etc.) 
+The Raku package
+["Cucumis Sextus](https://github.com/robertlemmen/raku-cucumis-sextus), [RL1], aims to provide a "full-blown"
+specification-and-execution framework in Raku like the typical Cucumber functionalities in other languages. (Ruby, Java,
+etc.)
 
 This package, "Gherkin::Grammar" takes a minimalist perspective; it aims to provide:
 
-- Grammar (and roles) for parsing Gherkin specifications 
-- Test file template generation 
+- Grammar (and roles) for parsing Gherkin specifications
+- Test file template generation
 
-Having a "standalone" Gherkin grammar (or role) facilitates the creation and execution
-of general or specialized frameworks for Raku support of BDD.
+Having a "standalone" Gherkin grammar (or role) facilitates the creation and execution of general or specialized
+frameworks for Raku support of BDD.
 
 The package provides the functions:
 
@@ -29,15 +28,14 @@ The package provides the functions:
 - `gherkin-subparse`
 - `gherkin-interpret`
 
-The Raku outputs of `gherkin-interpret` are test file templates that after filling-in
-would provide tests that correspond to the input specifications.
+The Raku outputs of `gherkin-interpret` are test file templates that after filling-in would provide tests that
+correspond to the input specifications.
 
-**Remark:** A good introduction to the Cucumber / Gherkin approach and workflows is the 
+**Remark:** A good introduction to the Cucumber / Gherkin approach and workflows is the
 [README](https://github.com/robertlemmen/raku-cucumis-sextus#readme)
 of [RLp1].
 
-**Remark:** The grammar in this package was programmed following the specifications and 
-explanations in 
+**Remark:** The grammar in this package was programmed following the specifications and explanations in
 [Gherkin Reference](https://cucumber.io/docs/gherkin/reference/).
 
 ------
@@ -60,8 +58,7 @@ zef install https://github.com/antononcube/Raku-Gherkin-Grammar
 
 ## Workflow
 
-The package follows the *general* Cucumber workflow, but some elements are less automated.
-Here is a flowchart:
+The package follows the *general* Cucumber workflow, but some elements are less automated. Here is a flowchart:
 
 ```mermaid
 flowchart TD
@@ -85,12 +82,14 @@ Here is corresponding narration:
 
 1. Write tests using Gherkin specs
 2. Generate test code
-   - Using the package "Gherkin::Grammar".
+    - Using the package "Gherkin::Grammar".
 3. Fill-in the code of step functions
 4. Execute tests
 5. Revisit (refine) steps 1 and/or 4 as needed
-6. Integrate resulting test file 
+6. Integrate resulting test file
 
+**Remark:** See the Cucumber framework flowchart in the files
+[Flowcharts.md](./docs/Flowcharts.md).
 
 ------
 
@@ -113,12 +112,12 @@ gherkin-interpret($text0);
 
 ### Internationalization
 
-The package provides internationalization using different languages.
-The (initial) internationalization keyword-regexes data structure was taken from [RLp1].
-(See the file ["I18n.rakumod"](https://github.com/robertlemmen/raku-cucumis-sextus/blob/master/lib/CucumisSextus/I18n.rakumod).)
+The package provides internationalization using different languages. The (initial) internationalization keyword-regexes
+data structure was taken from [RLp1].
+(See the
+file ["I18n.rakumod"](https://github.com/robertlemmen/raku-cucumis-sextus/blob/master/lib/CucumisSextus/I18n.rakumod).)
 
 Here is an example with Russian:
-
 
 ```perl6
 my $ru-text = q:to/END/;
@@ -131,26 +130,23 @@ END
 gherkin-interpret($ru-text, lang => 'Russian');
 ```
 
-### Arguments
+### Doc-string Arguments
 
 The package takes both doc-strings and tables as step arguments.
 
-The tables are parsed with the package "Markdown::Grammar", [AAp1].
+Doc-strings are put between lines with triple quotes; the text between the quotes is given as second argument of the
+corresponding step function.
 
-#### Doc-strings
-
-Doc-strings are put between lines with triple quotes; the text between the quotes 
-is given as second argument of the corresponding step function.
-
-Here is an example of a Gherkin specification for testing a data wrangling Domain Specific Language (DSL) 
+Here is an example of a Gherkin specification for testing a data wrangling Domain Specific Language (DSL)
 parser-interpreter, [AA1], that uses doc-string:
 
 ```gherkin
 Feature: Data wrangling DSL pipeline testing
+
   Scenario: Long pipeline
-     Given target is Raku
-     And titanic dataset exists
-     When is executed the pipeline:
+    Given target is Raku
+    And titanic dataset exists
+    When is executed the pipeline:
       """
       use @dsTitanic;
       filter by passengerSurvival is "survived";
@@ -162,25 +158,65 @@ Feature: Data wrangling DSL pipeline testing
 That specification is part of the Gherkin file:
 ["DSL-for-data-wrangling.feature"](./resources/DSL-for-data-wrangling.feature).
 
-The corresponding code generated by "Gherkin::Grammar" is given in the file: 
+The corresponding code generated by "Gherkin::Grammar" is given in the file:
 ["DSL-for-data-wrangling-generated.rakutest"](./resources/DSL-for-data-wrangling-generated.rakutest).
 
 The fill-in definitions of the corresponding functions are given in the file:
 ["DSL-for-data-wrangling.rakutest"](./resources/DSL-for-data-wrangling.rakutest).
 
+### Table arguments
+
+The package handles tables as step argument. The tables are parsed with the package "Markdown::Grammar", [AAp1].
+
+The table arguments are treated differently in
+`Example` or `Scenario` blocks than in `Scenario outline` blocks.
+
+Here is a "simple" use of a table:
+
+```gherkin
+Feature: DateTime parsing tests
+
+  Scenario: Simple
+    When today, yesterday, tomorrow
+    Then the results adhere to:
+      | Spec      | Result                        |
+      |-----------|-------------------------------|
+      | today     | DateTime.today                |
+      | yesterday | DateTime.today.earlier(:1day) |
+      | tomorrow  | DateTime.today.later(:1day)   |
+```
+
+Here is a `Scenario outline` spec:
+
+```gherkin
+Feature: DateTime parsing tests 2
+
+   Scenario Outline: Repeated
+      Given <Spec>
+      Then <Result>
+      Examples: the results adhere to:
+         | Spec      | Result                        |
+         | today     | DateTime.today                |
+         | yesterday | DateTime.today.earlier(:1day) |
+         | tomorrow  | DateTime.today.later(:1day)   |
+```
+
+**Remark:** The package [AAp1] parses tables with- and without headers.
+The Gherkin language descriptions and examples I have seen did not have tables 
+with header separators.
+
 ------
 
 ## Complete example
 
-The files 
-["Calculator.feature"](./resources/Calculator.feature) 
+The files
+["Calculator.feature"](./resources/Calculator.feature)
 and
 ["Calculator.rakutest"](./resources/Calculator.rakutest)
-provide a fully worked example of how this package can be used 
-to implement Cucumber framework workflows.
+provide a fully worked example of how this package can be used to implement Cucumber framework workflows.
 
-**Remark:** The Cucumber framework(s) expect Gherkin test specifications to be written in 
-files with extension ".feature".
+**Remark:** The Cucumber framework(s) expect Gherkin test specifications to be written in files with extension "
+.feature".
 
 ------
 
@@ -199,7 +235,8 @@ gherkin-interpretation --help
 ### Articles
 
 [AA1] Anton Antonov,
-["Introduction to data wrangling with Raku"](https://rakuforprediction.wordpress.com/2021/12/31/introduction-to-data-wrangling-with-raku/),
+["Introduction to data wrangling with Raku"](https://rakuforprediction.wordpress.com/2021/12/31/introduction-to-data-wrangling-with-raku/)
+,
 (2021),
 [RakuForPrediction at WordPress](https://rakuforprediction.wordpress.com).
 
@@ -209,13 +246,12 @@ gherkin-interpretation --help
 [cucumber.io](https://cucumber.io).
 
 [Wk1] Wikipedia entry,
-["Cucumber (software)"](https://en.wikipedia.org/wiki/Cucumber_(software)).
-See also [cucumber.io](https://cucumber.io).
+["Cucumber (software)"](https://en.wikipedia.org/wiki/Cucumber_(software)). See also [cucumber.io](https://cucumber.io).
 
 [Wk2] Wikipedia entry,
 ["Behavior-driven development"](https://en.wikipedia.org/wiki/Behavior-driven_development).
 
-### Packages 
+### Packages
 
 [AAp1] Anton Antonov,
 [Markdown::Grammar Raku package](https://github.com/antononcube/Raku-Markdown-Grammar),
