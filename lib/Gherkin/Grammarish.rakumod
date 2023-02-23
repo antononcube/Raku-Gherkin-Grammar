@@ -89,6 +89,11 @@ role Gherkin::Grammarish {
         $<docStrDelim> \s*
     }
 
+    regex ghk-table-block { $<header>=(<ghk-table-row>) $<rows>=(<ghk-table-row>+) }
+    regex ghk-table-field { <-[|\v]>* }
+    regex ghk-table-row { \h* '|' \h* [ <ghk-table-field>* % '|' ] \h* '|' \h* \n }
+    regex ghk-table-header-sep { \h* '|' \h* '---' [ '|' | '-' | '+' | ':' | \h ]* \n }
+
     regex ghk-feature-text-line          { \h* <ghk-keyword-feature>    \h* ':' \h+ <ghk-text-line-tail> }
     regex ghk-example-text-line          { \h* [ <ghk-keyword-example> | <ghk-keyword-scenario> ] \h* ':' \h+ <ghk-text-line-tail> }
     regex ghk-scenario-outline-text-line { \h* <ghk-keyword-scenario>   \h+ [ <ghk-keyword-outline> | <ghk-keyword-template> ] \h* ':' \h+ <ghk-text-line-tail> }
@@ -100,7 +105,7 @@ role Gherkin::Grammarish {
     regex ghk-then-text-line             { \h* <ghk-keyword-then>       \h+ <ghk-text-line-tail-arg> }
     regex ghk-but-text-line              { \h* <ghk-keyword-but>        \h+ <ghk-text-line-tail-arg> }
     regex ghk-asterisk-text-line         { \h* <ghk-keyword-asterisk>   \h+ <ghk-text-line-tail-arg> }
-    regex ghk-text-line-tail-arg         { <ghk-text-line-tail> [ \n [ <ghk-doc-string> || <md-table-block> ] ]? }
+    regex ghk-text-line-tail-arg         { <ghk-text-line-tail> [ \n [ <ghk-doc-string> || <ghk-table-block> ] ]? }
     regex ghk-text-line-tail             { <-[\v]>+ }
     regex ghk-text-element               { <-[\v]>* }
     token ghk-tag                        { '@' \S+ }

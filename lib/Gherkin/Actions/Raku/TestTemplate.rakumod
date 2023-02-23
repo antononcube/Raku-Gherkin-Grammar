@@ -137,7 +137,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         my $cmd = $<ghk-text-line-tail>.made;
         my $arg;
         if $<ghk-doc-string> { $arg = $<ghk-doc-string>.made; }
-        if $<md-table-block> { $arg = $<md-table-block>.made; }
+        if $<ghk-table-block> { $arg = $<ghk-table-block>.made; }
         make $arg.defined ?? [$cmd, $arg] !! $cmd;
     }
 
@@ -151,22 +151,22 @@ class Gherkin::Actions::Raku::TestTemplate {
     }
 
     #------------------------------------------------------
-    method md-table-block($/) {
-        my @header = $<hearder>.made;
-        my @rows = $<rows>>>.made;
-        my @res = @rows.map({ @header Z=> $_ });
-        return @res;
+    method ghk-table-block($/) {
+        my @header = $<header><ghk-table-row>.made;
+        my @rows = $<rows><ghk-table-row>>>.made;
+        my @res = @rows.map({ @header Z=> $_.Array })>>.Hash.Array;
+        make @res;
     }
-    method md-table-row($/) {
-        return $<md-table-field>>>.made;
+    method ghk-table-row($/) {
+        make $<ghk-table-field>>>.made;
     }
-    method md-table-field($/) {
-        return $/.Str;
+    method ghk-table-field($/) {
+        make $/.Str.trim;
     }
 
     #------------------------------------------------------
-    multi method make-sub-definition(Str:D $type, @cmd) {
-        my $res = "multi sub $type\( { @cmd.map({ '\'' ~ $_ ~ '\'' }).join(', ') } \) \{\}";
+    multi method make-sub-definition(Str:D $type, @cmd where *.elems == 2) {
+        my $res = "multi sub $type\( '{@cmd[0]}', {@cmd[1].raku} \) \{\}";
         return $res;
     }
 

@@ -7,9 +7,7 @@
     "Anton Antonov"
   ],
   "auth": "zef:antononcube",
-  "depends": [
-    "Markdown::Grammar:ver<0.4.7+>"
-  ],
+  "depends": [],
   "build-depends": [],
   "test-depends": [
     "Test"
