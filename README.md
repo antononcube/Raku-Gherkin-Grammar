@@ -206,7 +206,7 @@ Doc-strings are put between lines with triple quotes; the text between the quote
 corresponding step function.
 
 Here is an example of a Gherkin specification for testing a data wrangling Domain Specific Language (DSL)
-parser-interpreter, [AA1], that uses doc-string:
+parser-interpreter, [AA1, AAp2], that uses doc-string:
 
 ```gherkin
 Feature: Data wrangling DSL pipeline testing
@@ -294,13 +294,13 @@ with extension ".feature".
 
 ### DateTime interpretation
 
-The date-time interpretations of the package "DateTime::Grammar", [AAp2], are tested with the feature file
+The date-time interpretations of the package "DateTime::Grammar", [AAp3], are tested with the feature file
 [DateTime-interpretation.feature](./resources/DateTime-interpretation.feature) 
 (and the related "*.rakutest" files.)
 
 ### Numeric word forms parsing
 
-The interpretations of numeric word forms into number of the package "Lingua::NumericWordForms", [AAp3],
+The interpretations of numeric word forms into number of the package "Lingua::NumericWordForms", [AAp4],
 are tested with the feature file
 [Numeric-word-forms-parsing.feature](./resources/Numeric-word-forms-parsing.feature)
 (and the related "*.rakutest" files.)
@@ -308,7 +308,7 @@ are tested with the feature file
 ### DSL for data wrangling
 
 The data wrangling translations and execution results of the package 
-"DSL::English::DataQueryWorkflows", [AAp4], are tested with the feature file
+"DSL::English::DataQueryWorkflows", [AA1, AAp2], are tested with the feature file
 [DSL-for-data-wrangling.feature](./resources/DSL-for-data-wrangling.feature)
 (and the related "*.rakutest" files.)
 
@@ -365,17 +365,17 @@ gherkin-interpretation --help
 [GitHub/antononcube](https://github.com/antononcube).
 
 [AAp2] Anton Antonov,
+[DSL::English::DataQueryWorkflows Raku package](https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows),
+(2021-2023),
+[GitHub/antononcube](https://github.com/antononcube).
+
+[AAp3] Anton Antonov,
 [DateTime::Grammar Raku package](https://github.com/antononcube/Raku-DateTime-Grammar),
 (2023),
 [GitHub/antononcube](https://github.com/antononcube).
 
-[AAp3] Anton Antonov,
-[Lingua::NumericWordForms Raku package](https://github.com/antononcube/Raku-Lingua-NumericWordForms),
-(2021-2023),
-[GitHub/antononcube](https://github.com/antononcube).
-
 [AAp4] Anton Antonov,
-[DSL::English::DataQueryWorkflows Raku package](https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows),
+[Lingua::NumericWordForms Raku package](https://github.com/antononcube/Raku-Lingua-NumericWordForms),
 (2021-2023),
 [GitHub/antononcube](https://github.com/antononcube).
 
