@@ -21,7 +21,7 @@ sub gherkin-parse(Str:D $spec,
                    :$lang is copy = Whatever
                    ) is export {
     if $lang.isa(Whatever) { $lang = 'English'; }
-    return $pCOMMAND.parse($spec ~ "\n", :$rule, args => $rule eq 'TOP' ?? ($lang,) !! Empty);
+    return $pCOMMAND.parse($spec ~ "\n\n", :$rule, args => $rule eq 'TOP' ?? ($lang,) !! Empty);
 }
 
 sub gherkin-subparse(Str:D $spec,
@@ -29,7 +29,7 @@ sub gherkin-subparse(Str:D $spec,
                       :$lang is copy = Whatever
                       ) is export {
     if $lang.isa(Whatever) { $lang = 'English'; }
-    return $pCOMMAND.subparse($spec ~ "\n", :$rule, args => $rule eq 'TOP' ?? ($lang,) !! Empty);
+    return $pCOMMAND.subparse($spec ~ "\n\n", :$rule, args => $rule eq 'TOP' ?? ($lang,) !! Empty);
 }
 
 #| Conversion of Gherkin specification into code.
@@ -45,5 +45,5 @@ multi sub gherkin-interpret(Str:D $spec,
                              ) is export {
     if $actions.isa(Whatever) || $actions ~~ Str && $actions.lc eq 'raku' { $actions = $actionsObj; }
     if $lang.isa(Whatever) { $lang = 'English'; }
-    return $pCOMMAND.parse($spec ~ "\n", :$rule, :$actions, args => $rule eq 'TOP' ?? ($lang,) !! Empty).made;
+    return $pCOMMAND.parse($spec ~ "\n\n", :$rule, :$actions, args => $rule eq 'TOP' ?? ($lang,) !! Empty).made;
 }
