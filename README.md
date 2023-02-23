@@ -234,8 +234,7 @@ The fill-in definitions of the corresponding functions are given in the file:
 
 ### Table arguments
 
-The package handles tables as step argument. The tables are parsed with the package "Markdown::Grammar", [AAp1].
-
+The package handles tables as step arguments.
 The table arguments are treated differently in
 `Example` or `Scenario` blocks than in `Scenario outline` blocks.
 
@@ -248,13 +247,12 @@ Feature: DateTime parsing tests
     When today, yesterday, tomorrow
     Then the results adhere to:
       | Spec      | Result                        |
-      |-----------|-------------------------------|
       | today     | DateTime.today                |
       | yesterday | DateTime.today.earlier(:1day) |
       | tomorrow  | DateTime.today.later(:1day)   |
 ```
 
-Here is a `Scenario outline` spec:
+Here is a `Scenario Outline` spec:
 
 ```gherkin
 Feature: DateTime parsing tests 2
@@ -269,22 +267,54 @@ Feature: DateTime parsing tests 2
          | tomorrow  | DateTime.today.later(:1day)   |
 ```
 
+**Remark:** The package "Markdown::Grammar", [AAp1], parses tables
+in a similar manner, but [AAp1] assumes that a table field can have
+plain words, words with slant or weight, or hyperlinks.
+
 **Remark:** The package [AAp1] parses tables with- and without headers.
-The Gherkin language descriptions and examples I have seen did not have tables 
-with header separators.
+The Gherkin language descriptions and examples I have seen did not have tables
+with header separators. Hence, a header separator is treated as a regular 
+table row in "Gherkin::Grammar".
+
 
 ------
 
-## Complete example
+## Complete examples
+
+### Calculator
 
 The files
 ["Calculator.feature"](./resources/Calculator.feature)
 and
 ["Calculator.rakutest"](./resources/Calculator.rakutest)
-provide a fully worked example of how this package can be used to implement Cucumber framework workflows.
+provide a simple, fully worked example of how this package can be used to implement Cucumber framework workflows.
 
-**Remark:** The Cucumber framework(s) expect Gherkin test specifications to be written in files with extension "
-.feature".
+**Remark:** The Cucumber framework(s) expect Gherkin test specifications to be written in files 
+with extension ".feature".
+
+### DateTime interpretation
+
+The date-time interpretations of the package "DateTime::Grammar" are tested with the feature file
+[DateTime-interpretation.feature](./resources/DateTime-interpretation.feature) 
+(and the related "*.rakutest" files.)
+
+### Numeric word forms parsing
+
+The interpretations of numeric word forms into number of the package "Lingua::NumericWordForms" 
+are tested with the feature file
+[Numeric-word-forms-parsing.feature](./resources/Numeric-word-forms-parsing.feature)
+(and the related "*.rakutest" files.)
+
+### DSL for data wrangling
+
+The data wrangling translations and execution results of the package 
+"DSL::English::DataQueryWorkflows" are tested with the feature file
+[DSL-for-data-wrangling.feature](./resources/DSL-for-data-wrangling.feature)
+(and the related "*.rakutest" files.)
+
+This is a fairly non-trivial examples that involves multiple packages.
+Also, it makes a lot of sense to test DSL translators using a testing DSL 
+(like Gherkin.)
 
 ------
 
