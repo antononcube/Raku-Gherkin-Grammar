@@ -165,4 +165,31 @@ END
 
 ok gherkin-parse($text10), 'tagged Feature: Calculation';
 
+
+#-----------------------------------------------------------
+## 11
+#-----------------------------------------------------------
+
+my $text11 = q:to/END/;
+Scenario Outline: eating
+  Given there are <start> cucumbers
+  When I eat <eat> cucumbers
+  Then I should have <left> cucumbers
+  Examples:
+    | start | eat | left |
+    |    12 |   5 |    7 |
+    |    20 |   5 |   15 |
+END
+
+ok gherkin-parse($text11, rule => 'ghk-scenario-outline-block'), 'block Scenario Outline: eating';
+
+
+#-----------------------------------------------------------
+## 12
+#-----------------------------------------------------------
+
+my $text12 = 'Feature: Comendo pepino' ~ "\n" ~ $text11;
+ok gherkin-parse($text12), 'Feature with block Scenario Outline';
+
+
 done-testing;
