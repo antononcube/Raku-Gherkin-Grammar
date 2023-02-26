@@ -63,6 +63,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         my @res;
         with $<ghk-background-block> { @res.append($<ghk-background-block>.made); }
         @res.append($<ghk-example-block>>>.made);
+        @res.append($<ghk-scenario-outline-block>>>.made);
         make @res.join("\n\n#{'=' x 60}\n");
     }
 
@@ -84,6 +85,31 @@ class Gherkin::Actions::Raku::TestTemplate {
 
     method ghk-example-text-line ($/) {
         make '# Example : ' ~  $<ghk-text-line-tail>.made;
+    }
+
+    #------------------------------------------------------
+    method ghk-scenario-outline-block($/) {
+        my $descr = $<ghk-scenario-outline-text-line><ghk-text-line-tail>.made.trim;
+        my @res;
+
+        my @tbl = $<ghk-table-block>.made;
+
+        with $<ghk-given-block> { @res.append( $<ghk-given-block>.made ); }
+
+        with $<ghk-when-block> { @res.append( $<ghk-when-block>.made ); }
+
+        @res.append( $<ghk-then-block>.made );
+
+        @res = @res.map({ self.enhance-by-table-params($_, True) });
+
+        make $<ghk-scenario-outline-text-line>.made ~ "\n" ~
+                "#{'-' x 60}\n\n" ~
+                @res.join("\n\n") ~ "\n\n" ~
+                self.make-scenario-template-sub($descr, @res, @tbl);
+    }
+
+    method ghk-scenario-outline-text-line ($/) {
+        make '# Scenario Outline : ' ~  $<ghk-text-line-tail>.made;
     }
 
     #------------------------------------------------------
@@ -193,6 +219,10 @@ class Gherkin::Actions::Raku::TestTemplate {
         return self.make-execution-sub('Example', $descr, @lines, True);
     }
 
+    multi method make-scenario-template-sub($descr, @lines, @tbl) {
+        return self.make-execution-sub('ScenarioTemplate', $descr, @lines, @tbl, True);
+    }
+
     multi method make-execution-sub($type, $descr, @lines, Bool $add-is) {
         my $res = "multi sub $type\('$descr') \{";
         $res ~= "\n\t" ~ @lines.map({ $_.subst('multi sub', '').subst('$cmd where * eq ', '').subst('{}', '').trim ~ ';' }).join("\n\t");
@@ -206,6 +236,42 @@ class Gherkin::Actions::Raku::TestTemplate {
         }
 
         return $res;
+    }
+
+    multi method make-execution-sub($type, $descr, @lines, @tbl, Bool $add-is) {
+        my $res = "multi sub $type\('$descr', @tbl = {@tbl.raku}) \{";
+        $res ~= "\n\tmy @res = do for @tbl -> %record \{";
+
+        $res ~= "\n\t\t" ~
+                @lines.map({
+                    self.enhance-by-table-params($_.subst('multi sub', '').subst('$cmd where * eq ', '').subst('{}', ''), False).trim ~ ';'
+                }).join("\n\t\t");
+
+        $res ~= "\n\t}";
+        $res ~= "\n\treturn [&&] @res;";
+        $res ~= "\n}";
+
+        if $add-is {
+            if $!backgroundDescr {
+                $res ~= "\n\nBackground('$!backgroundDescr');";
+            }
+            $res ~= "\n\nis $type\(\'$descr\'), True, '$descr';";
+        }
+
+        return $res;
+    }
+
+    method enhance-by-table-params(Str $line, Bool $definition) {
+        my @params = $line.match(:g, / '<' <-[<>\h]>+ '>' /);
+        if @params.elems == 0 {
+            return $line.subst(')', ', %record )');
+        }
+        my $rkeys = '<' ~ @params.map({ $_.substr(1, *- 1) })>>.Str.unique.sort.join(' ') ~ '>';
+        return do if $definition {
+            $line.subst(')', ', %record where *.keys.all ∈ ' ~ $rkeys ~ ' )');
+        } else {
+            $line.subst(/ ', %record where' .* ')' /, ', %record.map({ $_.key ∈ ' ~ $rkeys ~ ' }) )');
+        }
     }
 
     method make-preface() {
