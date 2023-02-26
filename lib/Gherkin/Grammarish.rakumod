@@ -23,7 +23,7 @@ role Gherkin::Grammarish {
 
     regex ghk-example-block-list {
         <ghk-background-block>? \n*
-        <ghk-example-block>+
+        [  <ghk-scenario-outline-block> || <ghk-example-block> ]+
     }
 
     regex ghk-background-block {
@@ -40,6 +40,18 @@ role Gherkin::Grammarish {
         <ghk-given-block>?
         <ghk-when-block>?
         <ghk-then-block>
+        \n*
+    }
+
+    regex ghk-scenario-outline-block {
+        [ <ghk-tag-line> \n]?
+        <ghk-scenario-outline-text-line> \n
+        <ghk-given-block>?
+        <ghk-when-block>?
+        <ghk-then-block>
+        \n*
+        <ghk-examples-text-line> \n+
+        <ghk-table-block>
         \n*
     }
 
@@ -96,6 +108,7 @@ role Gherkin::Grammarish {
 
     regex ghk-feature-text-line          { \h* <ghk-keyword-feature>    \h* ':' \h+ <ghk-text-line-tail> }
     regex ghk-example-text-line          { \h* [ <ghk-keyword-example> | <ghk-keyword-scenario> ] \h* ':' \h+ <ghk-text-line-tail> }
+    regex ghk-examples-text-line         { \h* <ghk-keyword-examples>   \h* ':' \h* }
     regex ghk-scenario-outline-text-line { \h* <ghk-keyword-scenario>   \h+ [ <ghk-keyword-outline> | <ghk-keyword-template> ] \h* ':' \h+ <ghk-text-line-tail> }
     regex ghk-rule-text-line             { \h* <ghk-keyword-rule>       \h* ':' \h+ <ghk-text-line-tail> }
     regex ghk-background-text-line       { \h* <ghk-keyword-background> \h* ':' \h+ <ghk-text-line-tail> }
