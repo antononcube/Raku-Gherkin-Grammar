@@ -18,16 +18,16 @@ plan *;
 # Example : Full date
 #------------------------------------------------------------
 
-multi sub When($cmd where *eq '2023-02-20T00:00:00Z') {}
+multi sub When( $cmd where * eq '2023-02-20T00:00:00Z' ) {}
 
-multi sub Then($cmd where *eq 'the result is DateTime') {}
+multi sub Then( $cmd where * eq 'the result is DateTime' ) {}
 
-multi sub Then($cmd where *eq 'the year is "2023", month is "2", and date "20"') {}
+multi sub Then( $cmd where * eq 'the year is "2023", month is "2", and date "20"' ) {}
 
 multi sub Example('Full date') {
-    When('2023-02-20T00:00:00Z');
-    Then('the result is DateTime');
-    Then('the year is "2023", month is "2", and date "20"');
+	When( '2023-02-20T00:00:00Z' );
+	Then( 'the result is DateTime' );
+	Then( 'the year is "2023", month is "2", and date "20"' );
 }
 
 is Example('Full date'), True, 'Full date';
@@ -36,16 +36,16 @@ is Example('Full date'), True, 'Full date';
 # Example : ISO date
 #------------------------------------------------------------
 
-multi sub When($cmd where *eq '2032-10-01') {}
+multi sub When( $cmd where * eq '2032-10-01' ) {}
 
-multi sub Then($cmd where *eq 'the result is DateTime') {}
+multi sub Then( $cmd where * eq 'the result is DateTime' ) {}
 
-multi sub Then($cmd where *eq 'the year is "2032", month is "10", and date "1"') {}
+multi sub Then( $cmd where * eq 'the year is "2032", month is "10", and date "1"' ) {}
 
 multi sub Example('ISO date') {
-    When('2032-10-01');
-    Then('the result is DateTime');
-    Then('the year is "2032", month is "10", and date "1"');
+	When( '2032-10-01' );
+	Then( 'the result is DateTime' );
+	Then( 'the year is "2032", month is "10", and date "1"' );
 }
 
 is Example('ISO date'), True, 'ISO date';
@@ -54,16 +54,16 @@ is Example('ISO date'), True, 'ISO date';
 # Example : Full blown date time spec
 #------------------------------------------------------------
 
-multi sub When($cmd where *eq 'Sun, 06 Nov 1994 08:49:37 GMT') {}
+multi sub When( $cmd where * eq 'Sun, 06 Nov 1994 08:49:37 GMT' ) {}
 
-multi sub Then($cmd where *eq 'the result is DateTime') {}
+multi sub Then( $cmd where * eq 'the result is DateTime' ) {}
 
-multi sub Then($cmd where *eq 'the year is "1994", month is "11", and date "6"') {}
+multi sub Then( $cmd where * eq 'the year is "1994", month is "11", and date "6"' ) {}
 
 multi sub Example('Full blown date time spec') {
-    When('Sun, 06 Nov 1994 08:49:37 GMT');
-    Then('the result is DateTime');
-    Then('the year is "1994", month is "11", and date "6"');
+	When( 'Sun, 06 Nov 1994 08:49:37 GMT' );
+	Then( 'the result is DateTime' );
+	Then( 'the year is "1994", month is "11", and date "6"' );
 }
 
 is Example('Full blown date time spec'), True, 'Full blown date time spec';
@@ -72,19 +72,13 @@ is Example('Full blown date time spec'), True, 'Full blown date time spec';
 # Example : Simple table spec
 #------------------------------------------------------------
 
-multi sub When($cmd where *eq 'today, yesterday, tomorrow') {}
+multi sub When( $cmd where * eq 'today, yesterday, tomorrow' ) {}
 
-multi sub Then('the results adhere to:',
-               $[{ :Result("DateTime.today"), :Spec("today") },
-                 { :Result("DateTime.today.earlier(:1day)"), :Spec("yesterday") },
-                 { :Result("DateTime.today.later(:1day)"), :Spec("tomorrow") }]) {}
+multi sub Then( 'the results adhere to:', $[{:Result("DateTime.today"), :Spec("today")}, {:Result("DateTime.today.earlier(:1day)"), :Spec("yesterday")}, {:Result("DateTime.today.later(:1day)"), :Spec("tomorrow")}] ) {}
 
 multi sub Example('Simple table spec') {
-    When('today, yesterday, tomorrow');
-    Then('the results adhere to:',
-            $[{ :Result("DateTime.today"), :Spec("today") },
-              { :Result("DateTime.today.earlier(:1day)"), :Spec("yesterday") },
-              { :Result("DateTime.today.later(:1day)"), :Spec("tomorrow") }]);
+	When( 'today, yesterday, tomorrow' );
+	Then( 'the results adhere to:', $[{:Result("DateTime.today"), :Spec("today")}, {:Result("DateTime.today.earlier(:1day)"), :Spec("yesterday")}, {:Result("DateTime.today.later(:1day)"), :Spec("tomorrow")}] );
 }
 
 is Example('Simple table spec'), True, 'Simple table spec';
