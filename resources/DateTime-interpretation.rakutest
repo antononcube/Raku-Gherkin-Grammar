@@ -25,7 +25,7 @@ multi sub When($cmd) {
     $result = datetime-interpret($cmd);
 }
 
-multi sub Then($cmd where * eq 'the result is DateTime') {
+multi sub Then($cmd where *eq 'the result is DateTime') {
     return $result ~~ DateTime;
 }
 
@@ -41,7 +41,7 @@ multi sub Then($cmd where *~~ / ^ 'the year is "' .*? 'month is "' .*? 'and date
 multi sub Example('Full date') {
     When('2023-02-20T00:00:00Z');
     Then('the result is DateTime') and
-    Then('the year is "2023", month is "2", and date "20"');
+            Then('the year is "2023", month is "2", and date "20"');
 }
 
 is Example('Full date'), True, 'Full date';
@@ -53,7 +53,7 @@ is Example('Full date'), True, 'Full date';
 multi sub Example('ISO date') {
     When('2032-10-01');
     Then('the result is DateTime') and
-    Then('the year is "2032", month is "10", and date "1"');
+            Then('the year is "2032", month is "10", and date "1"');
 }
 
 is Example('ISO date'), True, 'ISO date';
@@ -65,9 +65,35 @@ is Example('ISO date'), True, 'ISO date';
 multi sub Example('Full blown date time spec') {
     When('Sun, 06 Nov 1994 08:49:37 GMT');
     Then('the result is DateTime') and
-    Then('the year is "1994", month is "11", and date "6"');
+            Then('the year is "1994", month is "11", and date "6"');
 }
 
 is Example('Full blown date time spec'), True, 'Full blown date time spec';
+
+#============================================================
+# Scenario Outline : Template with table spec
+#------------------------------------------------------------
+
+multi sub When($cmd where *eq 'the argument is <Spec>' , %record where *.keys.all ∈ <Spec>) {
+    $result = datetime-interpret(%record<Spec>);
+}
+
+multi sub Then($cmd where *eq 'the interpretation is <Result>' , %record where *.keys.all ∈ <Result>) {
+    use MONKEY-SEE-NO-EVAL;
+    $result eqv EVAL(%record<Result>)
+}
+
+multi sub ScenarioTemplate('Template with table spec',
+                           @tbl = [{ :Result("Date.today.DateTime"), :Spec("today") },
+                                   { :Result("Date.new(2022, 10, 20).DateTime"), :Spec("Oct 20 2022") },
+                                   { :Result("Date.new(2012, 11, 2).DateTime"), :Spec("11/2/2012") }]) {
+    my @res = do for @tbl -> %record {
+        When('the argument is <Spec>', %record.grep({ $_.key ∈ <Spec> }).Hash);
+        Then('the interpretation is <Result>', %record.grep({ $_.key ∈ <Result> }).Hash);
+    }
+    return [&&] @res;
+}
+
+is ScenarioTemplate('Template with table spec'), True, 'Template with table spec';
 
 done-testing;

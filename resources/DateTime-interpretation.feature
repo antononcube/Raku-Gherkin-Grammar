@@ -18,16 +18,16 @@ Feature: DateTime interpretation test
   Scenario: Simple table spec
     When today, yesterday, tomorrow
     Then the results adhere to:
-      | Spec      | Result                        |
-      | today     | DateTime.today                |
-      | yesterday | DateTime.today.earlier(:1day) |
-      | tomorrow  | DateTime.today.later(:1day)   |
+      | Spec      | Result                             |
+      | today     | Date.today.DateTime                |
+      | yesterday | Date.today.DateTime.earlier(:1day) |
+      | tomorrow  | Date.today.DateTime.later(:1day)   |
 
   Scenario Outline: Template with table spec
-    When when <Spec> is the argument
+    When the argument is <Spec>
     Then the interpretation is <Result>
     Examples:
       | Spec            | Result                          |
-      | today           | DateTime.today                  |
+      | today           | Date.today.DateTime             |
       | Oct 20 2022     | Date.new(2022, 10, 20).DateTime |
-      | November 2 2012 | Date.new(2022, 11, 2).DateTime  |
+      | 11/2/2012       | Date.new(2012, 11, 2).DateTime  |

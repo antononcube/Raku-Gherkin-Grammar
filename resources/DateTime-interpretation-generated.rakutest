@@ -74,13 +74,31 @@ is Example('Full blown date time spec'), True, 'Full blown date time spec';
 
 multi sub When( $cmd where * eq 'today, yesterday, tomorrow' ) {}
 
-multi sub Then( 'the results adhere to:', $[{:Result("DateTime.today"), :Spec("today")}, {:Result("DateTime.today.earlier(:1day)"), :Spec("yesterday")}, {:Result("DateTime.today.later(:1day)"), :Spec("tomorrow")}] ) {}
+multi sub Then( 'the results adhere to:', $[{:Result("Date.today.DateTime"), :Spec("today")}, {:Result("Date.today.DateTime.earlier(:1day)"), :Spec("yesterday")}, {:Result("Date.today.DateTime.later(:1day)"), :Spec("tomorrow")}] ) {}
 
 multi sub Example('Simple table spec') {
 	When( 'today, yesterday, tomorrow' );
-	Then( 'the results adhere to:', $[{:Result("DateTime.today"), :Spec("today")}, {:Result("DateTime.today.earlier(:1day)"), :Spec("yesterday")}, {:Result("DateTime.today.later(:1day)"), :Spec("tomorrow")}] );
+	Then( 'the results adhere to:', $[{:Result("Date.today.DateTime"), :Spec("today")}, {:Result("Date.today.DateTime.earlier(:1day)"), :Spec("yesterday")}, {:Result("Date.today.DateTime.later(:1day)"), :Spec("tomorrow")}] );
 }
 
 is Example('Simple table spec'), True, 'Simple table spec';
+
+#============================================================
+# Scenario Outline : Template with table spec
+#------------------------------------------------------------
+
+multi sub When( $cmd where * eq 'the argument is <Spec>' , %record where *.keys.all ∈ <Spec> ) {}
+
+multi sub Then( $cmd where * eq 'the interpretation is <Result>' , %record where *.keys.all ∈ <Result> ) {}
+
+multi sub ScenarioTemplate('Template with table spec', @tbl = [{:Result("Date.today.DateTime"), :Spec("today")}, {:Result("Date.new(2022, 10, 20).DateTime"), :Spec("Oct 20 2022")}, {:Result("Date.new(2012, 11, 2).DateTime"), :Spec("11/2/2012")}]) {
+	my @res = do for @tbl -> %record {
+		When( 'the argument is <Spec>' , %record.grep({ $_.key ∈ <Spec> }).Hash );
+		Then( 'the interpretation is <Result>' , %record.grep({ $_.key ∈ <Result> }).Hash );
+	}
+	return [&&] @res;
+}
+
+is ScenarioTemplate('Template with table spec'), True, 'Template with table spec';
 
 done-testing;
