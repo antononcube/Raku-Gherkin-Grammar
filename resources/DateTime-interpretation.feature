@@ -22,3 +22,12 @@ Feature: DateTime interpretation test
       | today     | DateTime.today                |
       | yesterday | DateTime.today.earlier(:1day) |
       | tomorrow  | DateTime.today.later(:1day)   |
+
+  Scenario Outline: Template with table spec
+    When when <Spec> is the argument
+    Then the interpretation is <Result>
+    Examples:
+      | Spec            | Result                          |
+      | today           | DateTime.today                  |
+      | Oct 20 2022     | Date.new(2022, 10, 20).DateTime |
+      | November 2 2012 | Date.new(2022, 11, 2).DateTime  |
