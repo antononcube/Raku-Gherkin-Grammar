@@ -270,7 +270,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         return do if $definition {
             $line.subst(')', ', %record where *.keys.all ∈ ' ~ $rkeys ~ ' )');
         } else {
-            $line.subst(/ ', %record where' .* ')' /, ', %record.map({ $_.key ∈ ' ~ $rkeys ~ ' }) )');
+            $line.subst(/ ', %record where' .* ')' /, ', %record.grep({ $_.key ∈ ' ~ $rkeys ~ ' }).Hash )');
         }
     }
 
