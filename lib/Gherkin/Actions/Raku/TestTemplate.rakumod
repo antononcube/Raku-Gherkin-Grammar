@@ -1,7 +1,5 @@
 use v6.d;
 
-use Data::Reshapers;
-
 constant $protos = q:to/END/;
 proto sub Background($descr) {*}
 proto sub ScenarioOutline(@cmdFuncPairs) {*}
