@@ -198,6 +198,25 @@ gherkin-interpret($ru-text, lang => 'Russian');
 # done-testing;
 ```
 
+The Gherkin keywords of different languages can be found with `gherkin-keywords`:
+
+```perl6
+use Gherkin::Grammar::Internationalization;
+
+say gherkin-keywords.keys;
+say gherkin-keywords.elems;
+say gherkin-keywords('en');
+say gherkin-keywords('ru');
+say gherkin-keywords('ja');
+```
+```
+# (kn pt fa th en-lol hr ja hu nl ur hi gj uk bs af bm bg sl en gl zh-CN en-old el tr ka is lu uz ta jv he ca tlh vi ast ro sk sv ar lt cy-GB es it lv fr mn de zh-TW sr-Latn az en-pirate ga em en-au am cs pa pl eo mk-Latn ht en-Scouse fi da mk-Cyrl id ko ru tt no et tl sr-Cyrl)
+# 73
+# {and => /'*'|'And'/, background => /'Background'/, but => /'*'|'But'/, example => /'Example'|'Scenario'/, examples => /'Examples'|'Scenarios'/, feature => /'Feature'|'Business Need'|'Ability'/, given => /'*'|'Given'/, name => /'English'/, native => /'English'/, rule => /'Rule'/, scenario => /'Scenario'/, scenario-outline => /'Scenario Outline'|'Scenario Template'/, then => /'*'|'Then'/, when => /'*'|'When'/}
+# {and => /'*'|'И'|'К тому же'|'Также'/, background => /'Предыстория'|'Контекст'/, but => /'*'|'Но'|'А'/, example => /'Пример' /, examples => /'Примеры' /, feature => /'Функция'|'Функциональность'|'Функционал'|'Свойство'/, given => /'*'|'Допустим'|'Дано'|'Пусть'|'Если'/, name => /'Russian'/, native => /'русский'/, rule => /'Правило'/, scenario => /'Сценарий'/, scenario-outline => /'Структура сценария'/, then => /'*'|'То'|'Затем'|'Тогда'/, when => /'*'|'Когда'/}
+# {and => /'*'|'かつ'/, background => /'背景'/, but => /'*'|'しかし'|'但し'|'ただし'/, examples => /'例'|'サンプル'/, feature => /'フィーチャ'|'機能'/, given => /'*'|'前提'/, name => /'Japanese'/, native => /'日本語'/, scenario => /'シナリオ'/, scenario-outline => /'シナリオアウトライン'|'シナリオテンプレート'|'テンプレ'|'シナリオテンプレ'/, then => /'*'|'ならば'/, when => /'*'|'もし'/}
+```
+
 ### Doc-string Arguments
 
 The package takes both doc-strings and tables as step arguments.

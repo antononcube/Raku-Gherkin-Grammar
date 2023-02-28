@@ -130,6 +130,18 @@ END
 gherkin-interpret($ru-text, lang => 'Russian');
 ```
 
+The Gherkin keywords of different languages can be found with `gherkin-keywords`:
+
+```perl6
+use Gherkin::Grammar::Internationalization;
+
+say gherkin-keywords.keys;
+say gherkin-keywords.elems;
+say gherkin-keywords('en');
+say gherkin-keywords('ru');
+say gherkin-keywords('ja');
+```
+
 ### Doc-string Arguments
 
 The package takes both doc-strings and tables as step arguments.
