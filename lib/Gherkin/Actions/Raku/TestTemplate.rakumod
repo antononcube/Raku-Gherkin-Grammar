@@ -120,7 +120,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         with $<ghk-given-block-element> { @res.append( $<ghk-given-block-element>>>.made ); }
         make @res;
      }
-    method ghk-given-block-element($/) { make $/.values[0].made.subst(' And(', ' Given(');; }
+    method ghk-given-block-element($/) { make $/.values[0].made.subst( / <wb> 'And(' /, 'Given(');; }
     method ghk-given-text-line($/) {
         make self.make-sub-definition('Given', $<ghk-text-line-tail-arg>.made);
     }
@@ -134,7 +134,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         }
         make @res;
     }
-    method ghk-when-block-element($/) { make $/.values[0].made.subst(' And(', ' When('); }
+    method ghk-when-block-element($/) { make $/.values[0].made.subst( / <wb> 'And(' / , 'When('); }
     method ghk-when-text-line($/) {
         make self.make-sub-definition('When', $<ghk-text-line-tail-arg>.made);
     }
@@ -146,7 +146,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         with $<ghk-then-block-element> { @res.append( $<ghk-then-block-element>>>.made ); }
         make @res;
     }
-    method ghk-then-block-element($/) { make $/.values[0].made.subst(' And(', ' Then('); }
+    method ghk-then-block-element($/) { make $/.values[0].made.subst( / <wb> 'And(' /, 'Then('); }
     method ghk-then-text-line($/) {
         make self.make-sub-definition('Then', $<ghk-text-line-tail-arg>.made);
     }
