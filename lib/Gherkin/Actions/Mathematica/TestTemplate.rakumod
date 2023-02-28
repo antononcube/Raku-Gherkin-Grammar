@@ -77,7 +77,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
 
     #------------------------------------------------------
     multi method make-sub-definition(Str:D $type, @cmd where *.elems == 2) {
-        my $res = "$type\[ '{@cmd[0]}', {@cmd[1].raku} \] := Block[\{\}, True];";
+        my $res = "$type\[ \"{@cmd[0]}\", {@cmd[1].raku} \] := Block[\{\}, True];";
         return $res;
     }
 
