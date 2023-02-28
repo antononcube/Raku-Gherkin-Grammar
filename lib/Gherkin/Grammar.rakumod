@@ -2,6 +2,7 @@ use v6.d;
 
 use Gherkin::Grammarish;
 use Gherkin::Grammar::Internationalization;
+use Gherkin::Actions::Mathematica::TestTemplate;
 use Gherkin::Actions::Raku::TestTemplate;
 use Markdown::Grammar;
 
@@ -14,7 +15,11 @@ grammar Gherkin::Grammar
 #-----------------------------------------------------------
 my $pCOMMAND = Gherkin::Grammar;
 
-my $actionsObj = Gherkin::Actions::Raku::TestTemplate.new();
+my $actionsObjRaku = Gherkin::Actions::Raku::TestTemplate.new();
+my $actionsObjWL = Gherkin::Actions::Mathematica::TestTemplate.new(
+        thinSectionSep => '(*' ~ ('-' x 60) ~ '*)',
+        thickSectionSep => '(*' ~ ('*' x 60) ~ '*)',
+        protos => '');
 
 sub gherkin-parse(Str:D $spec,
                    Str:D :$rule = 'TOP',
@@ -40,10 +45,18 @@ proto gherkin-interpret(|) is export {*}
 
 multi sub gherkin-interpret(Str:D $spec,
                              Str:D :$rule = 'TOP',
-                             :target(:$actions) is copy = $actionsObj,
+                             :target(:$actions) is copy = $actionsObjRaku,
                              :$lang is copy = Whatever
                              ) is export {
-    if $actions.isa(Whatever) || $actions ~~ Str && $actions.lc eq 'raku' { $actions = $actionsObj; }
+
+    $actions = do given $actions {
+        when Whatever { $actionsObjRaku; }
+        when $_ ~~ Str && $_.lc eq <raku perl6> { $actionsObjRaku; }
+        when $_ ~~ Str && $_.lc ∈ <mathematica wl> { $actionsObjWL; }
+        default { $actionsObjRaku}
+    }
+
     if $lang.isa(Whatever) { $lang = 'English'; }
+
     return $pCOMMAND.parse($spec ~ "\n\n", :$rule, :$actions, args => $rule eq 'TOP' ?? ($lang,) !! Empty).made;
 }
