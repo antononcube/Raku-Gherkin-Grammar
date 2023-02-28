@@ -9,11 +9,11 @@ my %*SUB-MAIN-OPTS = :named-anywhere;
 sub MAIN(
         Str $fileName where $fileName.IO.e, #= File name with a Gherkin feature specification.
         Str :l(:$from-lang) = 'English',    #= Natural language in which the feature specification is written in.
-        Str :t(:$to-lang) = 'Raku',         #= Language to interpret (translate) the specification to.
+        Str :t(:$target) = 'Raku',          #= Language (system) to interpret (translate) the specification to.
         Str :o(:$output) = '-',             #= File to place the interpretation to. (If '-' stdout is used.)
          ) {
 
-    my $res = gherkin-interpret(slurp($fileName), lang => $from-lang);
+    my $res = gherkin-interpret(slurp($fileName), lang => $from-lang, :$target );
 
     if $output ne '-' {
         spurt $output, $res;
