@@ -7,40 +7,45 @@ class Gherkin::Actions::Mathematica::TestTemplate
 
     # method TOP($/)
 
-    # method ghk-feature-block($/)
+    method ghk-feature-block($/) {
+        my $res;
+        with $<ghk-rule-block> { $res = $<ghk-rule-block>.made };
+        with $<ghk-example-block-list> { $res = $<ghk-example-block-list>.made };
+        make self.make-preface() ~ "\n" ~ $res;
+    }
 
     # method ghk-rule-block($/)
 
     #------------------------------------------------------
 
     method ghk-background-text-line ($/) {
-        make '(* Background : ' ~  $<ghk-text-line-tail>.made ~ '*)';
+        make '(* TestBackground : ' ~  $<ghk-text-line-tail>.made ~ ' *)';
     }
 
     #------------------------------------------------------
     method ghk-example-text-line ($/) {
-        make '(* Example : ' ~  $<ghk-text-line-tail>.made ~ '*)';
+        make '(* Example : ' ~  $<ghk-text-line-tail>.made ~ ' *)';
     }
 
     #------------------------------------------------------
     method ghk-scenario-outline-text-line ($/) {
-        make '(* Scenario Outline : ' ~  $<ghk-text-line-tail>.made ~ '*)';
+        make '(* Scenario Outline : ' ~  $<ghk-text-line-tail>.made ~ ' *)';
     }
 
     #------------------------------------------------------
-    method ghk-given-block-element($/) { make $/.values[0].made.subst(' And[', ' Given['); }
+    method ghk-given-block-element($/) { make $/.values[0].made.subst( / <wb> 'And[' /, 'Given['); }
     method ghk-given-text-line($/) {
         make self.make-sub-definition('Given', $<ghk-text-line-tail-arg>.made);
     }
 
     #------------------------------------------------------
-    method ghk-when-block-element($/) { make $/.values[0].made.subst(' And[', ' When['); }
+    method ghk-when-block-element($/) { make $/.values[0].made.subst(/ <wb> 'And[' /, 'When['); }
     method ghk-when-text-line($/) {
         make self.make-sub-definition('When', $<ghk-text-line-tail-arg>.made);
     }
 
     #------------------------------------------------------
-    method ghk-then-block-element($/) { make $/.values[0].made.subst(' And[', ' Then['); }
+    method ghk-then-block-element($/) { make $/.values[0].made.subst(/ <wb> 'And[' /, 'Then['); }
     method ghk-then-text-line($/) {
         make self.make-sub-definition('Then', $<ghk-text-line-tail-arg>.made);
     }
@@ -59,7 +64,8 @@ class Gherkin::Actions::Mathematica::TestTemplate
     method ghk-table-block($/) {
         my @header = $<header><ghk-table-row>.made;
         my @rows = $<rows><ghk-table-row>>>.made;
-        my @res = @rows.map({ @header Z=> $_.Array })>>.Hash.Array;
+        my @res = @rows.map({ '<|' ~ ( @header.map({ "\"$_\"" }) Z~ ( '->' X~ $_.Array ) ).join(', ') ~ '|>' }).Array;
+        @res = '{' ~ @res.join(', ') ~ '}';
         make @res;
     }
     method ghk-table-row($/) {
@@ -81,7 +87,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
     }
 
     multi method make-sub-definition(Str:D $type, Str:D $cmd) {
-        my $res = "$type\[ cmd_ : '$cmd'\] := Block[\{\}, True];";
+        my $res = "$type\[ \"$cmd\" ] := Block[\{\}, True];";
         return $res;
     }
 
@@ -91,7 +97,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
     }
 
     multi method make-background-sub($descr, @lines, $add-is) {
-        return self.make-execution-sub('Background', $descr, @lines, $add-is);
+        return self.make-execution-sub('TestBackground', $descr, @lines, $add-is);
     }
 
     multi method make-example-sub($descr, @lines) {
@@ -103,13 +109,14 @@ class Gherkin::Actions::Mathematica::TestTemplate
     }
 
     multi method make-execution-sub($type, $descr, @lines, Bool $add-is) {
-        my $res = "$type\[\"$descr\"] \{";
+        my $res = "$type\[\"$descr\"] := Block[\{\},";
         $res ~= "\n\t" ~ @lines.map({ $_.subst('cmd_ : ', '').subst(':= Block[{}, True];', '').trim ~ ';' }).join("\n\t");
-        $res ~= "\n}";
+        $res = $res.subst(/';' $/, '');
+        $res ~= "\n];";
 
         if $add-is {
             if self.backgroundDescr {
-                $res ~= "\n\nBackground[\"{self.backgroundDescr}\"];";
+                $res ~= "\n\nTestBackground[\"{self.backgroundDescr}\"];";
             }
             $res ~= "\n\nVerificationTest[ $type\[\"$descr\"\], True, TestID -> \"$descr\"]";
         }
@@ -118,23 +125,24 @@ class Gherkin::Actions::Mathematica::TestTemplate
     }
 
     multi method make-execution-sub($type, $descr, @lines, @tbl, Bool $add-is) {
-        my $res = "$type\[\"$descr\", tbl = {@tbl.raku}) \{";
+        my $res = "$type\[\"$descr\", tbl_ : {@tbl[0]}] :=\nBlock[\{res\},";
         $res ~= "\n\tres = Map[Function[\{record\},";
 
         $res ~= "\n\t\t" ~
                 @lines.map({
                     self.enhance-by-table-params($_.subst('cmd_ : ', '').subst(':= Block[{}, True];', ''), False).trim ~ ';'
                 }).join("\n\t\t");
+        $res = $res.subst(/';' $/, '');
 
         $res ~= "\n\t], tbl];";
-        $res ~= "\n\tAnd @@ Map[TrueQ, res];";
+        $res ~= "\n\tAnd @@ Map[TrueQ, res]";
         $res ~= "\n];";
 
         if $add-is {
             if self.backgroundDescr {
-                $res ~= "\n\nBackground[\"{self.backgroundDescr}\"];";
+                $res ~= "\n\nTestBackground[\"{self.backgroundDescr}\"];";
             }
-            $res ~= "\n\nVerificationTest[$type\[\'$descr\'\], True, TestID -> \"$descr\"]";
+            $res ~= "\n\nVerificationTest[$type\[\"$descr\"\], True, TestID -> \"$descr\"]";
         }
 
         return $res;
@@ -143,18 +151,25 @@ class Gherkin::Actions::Mathematica::TestTemplate
     method enhance-by-table-params(Str $line, Bool $definition) {
         my @params = $line.match(:g, / '<' <-[<>\h]>+ '>' /);
         if @params.elems == 0 {
-            return $line.subst(')', ', %record )');
+            if !$line.contains(', record_') {
+                return $line.subst(']', ", record_ ]");
+            } else {
+                return $line.subst('record_', 'record');
+            }
         }
-        my $rkeys = '<' ~ @params.map({ $_.substr(1, *- 1) })>>.Str.unique.sort.join(' ') ~ '>';
+        my $rkeys = '{"' ~ @params.map({ $_.substr(1, *- 1) })>>.Str.unique.sort.join('", "') ~ '"}';
         return do if $definition {
-            $line.subst(')', ', %record where *.keys.all ∈ ' ~ $rkeys ~ ' )');
+            $line.subst(']', ', record_?AssociationQ ]');
         } else {
-            $line.subst(/ ', %record where' .* ')' /, ', %record.grep({ $_.key ∈ ' ~ $rkeys ~ ' }).Hash )');
+            $line.subst(', record_?AssociationQ ]', ', KeyTake[record, ' ~ $rkeys ~ ']]');
         }
     }
 
     method make-preface() {
-        my $res = self.protos ~ "\n\n{self.thickSectionSep}";
+        my @funcs = <Then When TestBackground ScenarioTemplate>;
+        my $res = 'Clear[' ~ @funcs.join(', ') ~ '];' ~ "\n\n";
+        $res ~= @funcs.map({ $_ ~ '[___] := (Echo["No definitions.", "' ~ $_ ~ ':"]);' }).join("\n");
+        $res ~= "\n\n{self.thickSectionSep}";
         return $res;
     }
 }
