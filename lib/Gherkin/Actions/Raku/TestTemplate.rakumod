@@ -1,6 +1,6 @@
 use v6.d;
 
-constant $protos = q:to/END/;
+constant $rakuProtos = q:to/END/;
 proto sub Background($descr) {*}
 proto sub ScenarioOutline(@cmdFuncPairs) {*}
 proto sub Example($descr) {*}
@@ -12,7 +12,10 @@ END
 
 class Gherkin::Actions::Raku::TestTemplate {
 
-    has Str $!backgroundDescr = '';
+    has Str $.protos is rw = $rakuProtos;
+    has Str $.thinSectionSep is rw = '#' ~ ('-' x 60);
+    has Str $.thickSectionSep is rw = '#' ~ ('=' x 60);
+    has Str $.backgroundDescr is rw = '';
 
     method TOP($/) {
         make $/.values[0].made;
@@ -43,7 +46,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         with $<ghk-then-block> { $add-is = True; @res.append( $<ghk-then-block>.made ); }
 
         my $res = $<ghk-background-text-line>.made ~ "\n" ~
-                "#{'-' x 60}\n\n" ~
+                self.thinSectionSep ~ "\n\n" ~
                 @res.join("\n\n") ~ "\n\n" ~
                 self.make-background-sub($descr, @res, $add-is);
 
@@ -62,7 +65,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         with $<ghk-background-block> { @res.append($<ghk-background-block>.made); }
         @res.append($<ghk-example-block>>>.made);
         @res.append($<ghk-scenario-outline-block>>>.made);
-        make @res.join("\n\n#{'=' x 60}\n");
+        make @res.join("\n\n{self.thickSectionSep}\n");
     }
 
     method ghk-example-block($/) {
@@ -76,7 +79,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         @res.append( $<ghk-then-block>.made );
 
         make $<ghk-example-text-line>.made ~ "\n" ~
-                "#{'-' x 60}\n\n" ~
+                self.thinSectionSep ~ "\n\n" ~
                 @res.join("\n\n") ~ "\n\n" ~
                 self.make-example-sub($descr, @res);
     }
@@ -101,7 +104,7 @@ class Gherkin::Actions::Raku::TestTemplate {
         @res = @res.map({ self.enhance-by-table-params($_, True) });
 
         make $<ghk-scenario-outline-text-line>.made ~ "\n" ~
-                "#{'-' x 60}\n\n" ~
+                self.thinSectionSep ~ "\n\n" ~
                 @res.join("\n\n") ~ "\n\n" ~
                 self.make-scenario-template-sub($descr, @res, @tbl);
     }
@@ -273,11 +276,11 @@ class Gherkin::Actions::Raku::TestTemplate {
     }
 
     method make-preface() {
-        my $res = "use v6.d;\n\n#{'=' x 60}\n\n" ~
-                $protos ~
-                "\n#{'=' x 60}\n\n" ~
+        my $res = "use v6.d;\n\n{self.thickSectionSep}\n\n" ~
+                self.protos ~
+                "\n{self.thickSectionSep}\n\n" ~
                 "use Test;\nplan *;" ~
-                "\n\n#{'=' x 60}";
+                "\n\n{self.thickSectionSep}";
         return $res;
     }
 }
