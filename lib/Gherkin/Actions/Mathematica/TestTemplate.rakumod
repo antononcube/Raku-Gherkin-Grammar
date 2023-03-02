@@ -57,6 +57,10 @@ class Gherkin::Actions::Mathematica::TestTemplate
     #------------------------------------------------------
     # method ghk-text-line-tail-arg($/)
 
+    method ghk-text-line-tail($/) {
+        make $/.Str.subst('"', '\"'):g;
+    }
+
     #------------------------------------------------------
     # method ghk-doc-string($/)
 
@@ -77,7 +81,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
 
     #------------------------------------------------------
     multi method make-sub-definition(Str:D $type, @cmd where *.elems == 2) {
-        my $res = "$type\[ \"{@cmd[0]}\", {@cmd[1].raku} \] := Block[\{\}, True];";
+        my $res = "$type\[ \"{@cmd[0]}\", tbl_ : {@cmd[1]} \] := Block[\{\}, True];";
         return $res;
     }
 
