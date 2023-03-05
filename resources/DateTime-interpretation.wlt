@@ -103,7 +103,7 @@ Then[ "the interpretation is <Result>" , record_?AssociationQ ] :=
       res = StringReplace[record["Result"],
         {"Date.today.DateTime" -> "Today",
           "Date.new(" ~~ x:__ ~~ ").DateTime" :> "DateObject[{" <> x <>"}]",
-          ".earlier(:1day)" -> "-Quantity[1,\"Days\"]",=
+          ".earlier(:1day)" -> "-Quantity[1,\"Days\"]",
           ".later(:1day)" -> "+Quantity[1,\"Days\"]"
         }];
       Echo[res, "Then[the interpretation is <Result>, __] : "];
