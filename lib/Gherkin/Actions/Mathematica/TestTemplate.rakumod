@@ -78,7 +78,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
     method ghk-table-block($/) {
         my @header = $<header><ghk-table-row>.made;
         my @rows = $<rows><ghk-table-row>>>.made;
-        my @res = @rows.map({ '<|' ~ ( @header.map({ "\"$_\"" }) Z~ ( '->' X~ $_.Array ) ).join(', ') ~ '|>' }).Array;
+        my @res = @rows.map({ '<|' ~ ( @header.map({ "\"$_\"" }) Z~ ( '->' X~ $_.map({ "\"$_\"" }).Array ) ).join(', ') ~ '|>' }).Array;
         @res = '{' ~ @res.join(', ') ~ '}';
         make @res;
     }
