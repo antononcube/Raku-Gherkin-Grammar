@@ -11,7 +11,12 @@ class Gherkin::Actions::Mathematica::TestTemplate
         my $res;
         with $<ghk-rule-block> { $res = $<ghk-rule-block>.made };
         with $<ghk-example-block-list> { $res = $<ghk-example-block-list>.made };
-        make self.make-preface() ~ "\n" ~ $res;
+        my $testBegin = 'BeginTestSection["' ~ $<ghk-feature-text-line>.made ~ '"];';
+        my $testEnd = 'EndTestSection[];';
+        make [$testBegin ~ "\n",
+              self.make-preface(),
+              $res,
+              "\n" ~ $testEnd].join("\n");
     }
 
     # method ghk-rule-block($/)
@@ -48,6 +53,11 @@ class Gherkin::Actions::Mathematica::TestTemplate
     method ghk-then-block-element($/) { make $/.values[0].made.subst(/ <wb> 'And[' /, 'Then['); }
     method ghk-then-text-line($/) {
         make self.make-sub-definition('Then', $<ghk-text-line-tail-arg>.made);
+    }
+
+    #------------------------------------------------------
+    method ghk-feature-text-line($/) {
+        make $<ghk-text-line-tail>.made.subst(/ \h+ /, '_');
     }
 
     #------------------------------------------------------
@@ -116,6 +126,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
         my $res = "$type\[\"$descr\"] := Block[\{\},";
         $res ~= "\n\t" ~ @lines.map({ $_.subst('cmd_ : ', '').subst(':= Block[{}, True];', '').trim ~ ';' }).join("\n\t");
         $res = $res.subst(/';' $/, '');
+        $res = $res.subst(/ 'tbl_' \h* ':' \h* '{' /, '{'):g;
         $res ~= "\n];";
 
         if $add-is {
@@ -146,7 +157,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
             if self.backgroundDescr {
                 $res ~= "\n\nTestBackground[\"{self.backgroundDescr}\"];";
             }
-            $res ~= "\n\nVerificationTest[$type\[\"$descr\"\], True, TestID -> \"$descr\"]";
+            $res ~= "\n\nVerificationTest[$type\[\"$descr\"\], True, TestID -> \"$descr\"];";
         }
 
         return $res;
