@@ -57,7 +57,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
 
     #------------------------------------------------------
     method ghk-feature-text-line($/) {
-        make $<ghk-text-line-tail>.made.subst(/ \h+ /, '_');
+        make $<ghk-text-line-tail>.made.subst(/ \h+ /, '_'):g;
     }
 
     #------------------------------------------------------
@@ -133,7 +133,7 @@ class Gherkin::Actions::Mathematica::TestTemplate
             if self.backgroundDescr {
                 $res ~= "\n\nTestBackground[\"{self.backgroundDescr}\"];";
             }
-            $res ~= "\n\nVerificationTest[ $type\[\"$descr\"\], True, TestID -> \"$descr\"]";
+            $res ~= "\n\nVerificationTest[ $type\[\"$descr\"\], True, TestID -> \"$descr\"];";
         }
 
         return $res;
