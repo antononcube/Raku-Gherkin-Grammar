@@ -4,10 +4,8 @@ use Gherkin::Grammarish;
 use Gherkin::Grammar::Internationalization;
 use Gherkin::Actions::Mathematica::TestTemplate;
 use Gherkin::Actions::Raku::TestTemplate;
-use Markdown::Grammar;
 
 grammar Gherkin::Grammar
-        is Markdown::Grammar
         does Gherkin::Grammarish {
 
 }
